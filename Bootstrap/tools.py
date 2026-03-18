@@ -9,6 +9,8 @@ import nltk
 
 # pr les tokens
 from nltk.stem import WordNetLemmatizer
+import spacy
+from nltk.stem import SnowballStemmer
 
 
 # pour le premier lancement il faut executer cette function
@@ -18,8 +20,12 @@ def init():
     nltk.download('words')
     nltk.download('stopwords')
     nltk.download('wordnet')
-
+    # python3 -m spacy download en_core_web_sm
 # init()
+
+
+
+
 # on va lire notre ficbier csv qui contient tt les infos de nos 75k livres
 reader = csv.DictReader(open('pg_catalog.csv'))
 
@@ -38,27 +44,27 @@ for row in reader:
 # on defini nos argument, ceux la ne sont pas limite en nombre
 parser = argparse.ArgumentParser()
 
+
+
 # on defini nos argument:
 parser.add_argument('-l', '--lower', action='store_true', help='lower')
-parser.add_argument('-t', '--text', help='text a convertir ou autre', type=str)
-parser.add_argument('-T', '--TOKENS', help='TOKENS pour le postag', type=str)
 parser.add_argument("--ID", help="id", type=int)
-parser.add_argument('-postag', '--postag', action='store_true', help='tokenization')
+parser.add_argument('-postag', '--postag', nargs="+", help='tokenization')
 
 # Pour nos Token:
 parser.add_argument('-sentence', '--sent', action='store_true', help='Bool to pass token in sentence mode')
 parser.add_argument('-stopWord', '--stop', action='store_true', help='Bool to remove stop word')
 parser.add_argument('-punctualtion', '--punct', action='store_true', help='Bool to remove punctuation')
-parser.add_argument('-stemming', '--steam', action='store_true', help='Bool to enable stemming')
+parser.add_argument('-stemming', '--stem', action='store_true', help='Bool to enable stemming')
 
 
 # ici c'est les arguments principaux, on limite leurs utilisation a uniquement 1 par commande
 VariableType = parser.add_mutually_exclusive_group()
 VariableType.add_argument('-i', '--info', action='store_true', help='Increase output verbosity.')
 VariableType.add_argument('-d', '--download', action='store_true', help='Download')
-VariableType.add_argument('-n', '--clean', action='store_true', help='nettoyage')
-VariableType.add_argument('-token', '--tokenize', action='store_true', help='tokenization')
-VariableType.add_argument('-normalize', '--normalize', action='store_true', help='normalize')
+VariableType.add_argument('-n', '--clean', nargs="+", help='nettoyage')
+VariableType.add_argument('-token', '--tokenize', nargs="+", help='tokenization')
+VariableType.add_argument('-normalize', '--normalize', nargs="+", help='normalize')
 
 
 
@@ -67,15 +73,16 @@ args = parser.parse_args()
 
 
 
-#=========================================================================================================#
 
-# si on veut les onfromations, on prend les infos d'un de nos ID de notre dictionnaire
-if args.info:
+def get_info():
+    # si on veut les onfromations, on prend les infos d'un de nos ID de notre dictionnaire
     print(result[str(args.ID)])
 
-# si on veut telecharger un livre
-# /!\ attention si le fichier existe deja ca va mettre une erreur il faut qu'il n'existe pas deja dans nos fichers /!\
-if args.download:
+
+
+def download_book():
+    # si on veut telecharger un livre
+    # /!\ attention si le fichier existe deja ca va mettre une erreur il faut qu'il n'existe pas deja dans nos fichers /!\
     lineLst = []
     # on va request a l'url avec le bn id mis en parametre
     response = requests.request('GET', f'https://www.gutenberg.org/cache/epub/{args.ID}/pg{args.ID}.txt')
@@ -86,12 +93,9 @@ if args.download:
 
 
 
-#=========================================================================================================#
-
-
-# ici on met en forme si on veut le clean, on remove les espaces et si on met lower alors ca met en lower notre txt
-if args.clean:
-    txt = args.text
+def clean_data():
+    # ici on met en forme si on veut le clean, on remove les espaces et si on met lower alors ca met en lower notre txt
+    txt = " ".join(args.clean)
     # si on veut lower on lower
     if args.lower:
         txt = txt.lower()
@@ -105,15 +109,12 @@ if args.clean:
 
 
 
-#=========================================================================================================#
-
-
-# iic on gere les tokens
-if args.tokenize:
+def tokenize_data():
+    # iic on gere les tokens
     # on defini notre liste de stopword donc els the etc avec une librairie
     stop_words = stopwords.words("english")
     # on va split tt nos motss dans notre text
-    LstToken = (args.text.split())
+    LstToken = " ".join(args.tokenize).split()
     # notre liste qui contient nos infos finales
     LstToken_final = []
 
@@ -131,14 +132,15 @@ if args.tokenize:
                 if mot.lower() not in stop_words:
                     LstToken_final.append(mot)
 
-
     else:
         # si on ne veut pas retirer les stopword on va quand meme verifier au cas nous ne voulons pas de la ponctuation
         if args.punct:
             for mot in LstToken:
                 if mot not in string.punctuation:
                     LstToken_final.append(mot)
-
+        else:
+            for mot in LstToken:
+                LstToken_final.append(mot)
 
     # on verifie si on veut sous forme de phrase ou sous forme de liste de mots
     if not args.sent:
@@ -157,35 +159,70 @@ if args.tokenize:
 
 
 
-if args.postag:
-    if args.TOKENS:
-        tokens = args.TOKENS.split()
-        LstToken_base = []
-        LstToken_Finale = []
-        for token in tokens:
-            LstToken_base.append(token)
-             # print(token)
-        tagged = nltk.pos_tag(LstToken_base)
-        # print(tagged)
-        entities = nltk.chunk.ne_chunk(tagged)
-        for element in entities:
-            LstToken_Finale.append(element)
-        print(LstToken_Finale)
-    else:
-        raise ValueError("Aucun string token provide")
-    
 
+def run_postag():
+    tokens = " ".join(args.postag).split()
+    LstToken_base = []
+    LstToken_Finale = []
+    for token in tokens:
+        LstToken_base.append(token)
+            # print(token)
+    tagged = nltk.pos_tag(LstToken_base)
+    # print(tagged)
+    entities = nltk.chunk.ne_chunk(tagged)
+    for element in entities:
+        LstToken_Finale.append(element)
+    print(LstToken_Finale)
+
+
+
+
+def run_normalize():
+    # si y a --steam
+    if args.stem:
+        stemmer = SnowballStemmer("english")
+        # on met tout en minuscule
+        result = [stemmer.stem(token.lower()) for token in args.normalize]
+        print(result)
+        
+    # sinon on fait la lemmatisation
+    else:
+        nlp = spacy.load("en_core_web_sm")
+        
+        # on regroupe pour que spacy comprend le contexte
+        doc = nlp(" ".join(args.normalize))
+        
+        result = []
+        for token in doc:
+            lemma = token.lemma_
+            
+            # ici c'est pr garder la majuscule
+            if token.text.istitle():
+                lemma = lemma.capitalize()
+            result.append(lemma)
+            
+        print(result)
+
+
+
+
+
+
+# ici on appelle nos function en fonction de si tel ou tel argument est donne
+if args.info:
+    get_info()
+
+if args.download:
+    download_book()
+
+if args.clean:
+    clean_data()
+
+if args.tokenize:
+    tokenize_data()
+
+if args.postag:
+    run_postag()
 
 if args.normalize:
-    if args.TOKENS:
-        if not args.steam:
-            tokens = args.TOKENS.split()
-            LstToken_base = []
-            for token in tokens:
-                LstToken_base.append(token)
-            
-            lemmatizer = WordNetLemmatizer()
-            lemmatized_words = [lemmatizer.lemmatize(word) for word in LstToken_base]
-            print(lemmatized_words)
-    else:
-        raise ValueError("Aucun string token provide")
+    run_normalize()

@@ -13,12 +13,14 @@ from collections import Counter
 
 
 
-# fonction d'initialisation qui permet d'initialiser tout ce qu'on na besoin pour le code
-# def init():
+# initisalisation de notyre parser
 parser = argparse.ArgumentParser()
 
+# nos actions
 VariableType = parser.add_mutually_exclusive_group()
 VariableType.add_argument('--lexdiv', metavar='ID', type=int, nargs="+", help='lexdiv parameters follow by id')
+
+# notre nom pour les args
 args = parser.parse_args()
 
 
@@ -26,6 +28,13 @@ args = parser.parse_args()
 
 
 def Info_Book():
+    """
+    Fonction qui permet de recuperer un dictionnaire contenant pour tout les livres du projet gutenberg une liste d'informations comme 
+    le title, les authors, ...
+
+    result --> Dictionnaire contrenant les inforamtions finale pour chaque text
+    reader --> CSV contenant les informations sur les 75000 livres du projet Gutenbergs
+    """
     reader = csv.DictReader(open('pg_catalog.csv'))
     result = {}
     for row in reader:
@@ -44,32 +53,28 @@ Livre_infos = Info_Book()
 
 
 
-
 # fonction qui nous permnet d'avoir notre dictionnaire demande pour le lexdiv
 def lexdiv():
+    """
+    Fonction permettant de recuperer diverses informations issu de notre livre tokenize
+
+    "tok":int, # total number of word tokens
+    "typ":int, # number of unique word tokens
+    "hap":int, # number of word tokens occurring only once
+    "ttr":float, # number of unique words tokens divided by number of word tokens
+    "mwl":float, # mean number of characters per word token
+    "mwf":float # number of word token divided by number of unique word tokens
+    """
     Dict_lexdiv = {}
     ID = args.lexdiv[0]
     response = download_book(Livre_infos, ID)
-
-    # print(Book)
-
-
-    # with open()
-    # response = requests.get(f'https://www.gutenberg.org/cache/epub/{ID}/pg{ID}.txt')
-    # response.raise_for_status()
-    # content = response.text
-
 
     nameFIle = f"{response[1][:-4]}_token.txt"
     with open(nameFIle, "r", encoding="utf-8") as txt:
         tokens = json.load(txt)
         # print(tokens)
 
-        
-
     tokens_unique = len(set(tokens))
-
-
 
     # calcul du nombre unique d'occurence pour 1 token
     nbr_unique_occurence = 0
@@ -84,11 +89,6 @@ def lexdiv():
         length.append(len(mot))
     longueur_moyenne = sum(length)/len(length)
 
-
-
-   
-
-
     Dict_lexdiv["tok"] = len(tokens)
     Dict_lexdiv["typ"] = tokens_unique
     Dict_lexdiv["hap"] = nbr_unique_occurence
@@ -99,5 +99,7 @@ def lexdiv():
 
     return Dict_lexdiv
 
+
+# SI on appelle notre argument dans le fichier
 if args.lexdiv:
     print(lexdiv())

@@ -1,22 +1,30 @@
 import os
 import requests
 
+import json
+
+from Modules.Tokenization import tokenize_data
+
+
 def download_book(Dico_info, ID):
-    file_name = f"{Dico_info[str(ID)]['title']}.txt"
+    file_name = f"cache/{Dico_info[str(ID)]['title']}.txt"
     
     # on verifie qu'il existe pas deja
     if os.path.exists(file_name):
-        print(f"Livre {ID} déjà présent localement.")
-        return
+        print(f"Livre {ID} deja present localement.")
+        print("Utilisation du cash.")
+        return ["Succes", (f"cache/{Dico_info[str(ID)]['title']}.txt")]
+
 
     # on le telecharge
     try:
+        print("canard")
         response = requests.get(f'https://www.gutenberg.org/cache/epub/{ID}/pg{ID}.txt')
         response.raise_for_status()
         content = response.text
     except Exception as e:
         print(f"Erreur pendant download : {e}")
-        return
+        return "Error"
 
     # on place nos marker car on connait la ligne du ***STart ... ***
     ligne = content.splitlines() # le splitlines ici ca sert a transofmne tt nos phrases en liste de phrase
@@ -38,5 +46,18 @@ def download_book(Dico_info, ID):
     with open(file_name, "w", encoding="utf-8") as livre:
         # truc de barbare mais on recolle toute nos phrases de notre liste de phrases ensemble si elles sont comprises entre la ligne de debut e de fin et on met un \n car dans une liste de phrase on a plus d'espace
         clean_content = "\n".join(ligne[Start_index:End_index])
+        make_token(Dico_info, ID, clean_content)
         # on reecrit
         livre.write(clean_content)
+        
+    return ["Succes", (f"cache/{Dico_info[str(ID)]['title']}.txt")]
+
+
+
+
+def make_token(Dico_info, ID, Text):
+    file_nom = f"cache/{Dico_info[str(ID)]['title']}_token.txt"
+    with open(file_nom, "w", encoding="utf-8") as cache_token:
+        toeknization = tokenize_data(Text)
+        print(type(toeknization))
+        cache_token.write(json.dumps(toeknization))

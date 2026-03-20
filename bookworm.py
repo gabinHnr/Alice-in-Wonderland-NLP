@@ -16,10 +16,6 @@ def init():
     VariableType.add_argument('-lexdiv', metavar='ID', type=int, nargs="+", help='lexdiv parameters follow by id')
 
 
-
-
-
-
 def Info_Book():
     reader = csv.DictReader(open('pg_catalog.csv'))
     result = {}

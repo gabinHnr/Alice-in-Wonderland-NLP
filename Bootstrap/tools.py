@@ -5,7 +5,9 @@ import requests
 # pr verifier si y a des stop word ou ponctuation
 from nltk.corpus import stopwords
 import string
-import nltk
+import nltk 
+
+
 
 # pr les tokens
 from nltk.stem import WordNetLemmatizer

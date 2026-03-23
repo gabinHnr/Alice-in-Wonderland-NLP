@@ -4,6 +4,13 @@ import string
 
 def tokenize_data(Text, stop=False, punct=False, sent=False):
 
+
+    if punct:
+
+        Text = Text.translate(str.maketrans('', '', string.punctuation))
+
+
+
     # iic on gere les tokens
     # on defini notre liste de stopword donc els the etc avec une librairie
     stop_words = stopwords.words("english")

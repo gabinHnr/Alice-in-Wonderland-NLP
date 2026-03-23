@@ -7,18 +7,23 @@ from Modules.Tokenization import tokenize_data
 
 
 def download_book(Dico_info, ID):
-    file_name = f"cache/{Dico_info[str(ID)]['title']}.txt"
+    if os.path.exists(f"cache/{Dico_info[str(ID)]['title']}"):
+        pass
+    else:
+        os.mkdir(f"cache/{Dico_info[str(ID)]['title']}")
+
+
+    file_name = f"cache/{Dico_info[str(ID)]['title']}/{Dico_info[str(ID)]['title']}.txt"
     
     # on verifie qu'il existe pas deja
     if os.path.exists(file_name):
         print(f"Livre {ID} deja present localement.")
         print("Utilisation du cash.")
-        return ["Succes", (f"cache/{Dico_info[str(ID)]['title']}.txt")]
+        return ["Succes", (f"cache/{Dico_info[str(ID)]['title']}/{Dico_info[str(ID)]['title']}.txt")]
 
 
     # on le telecharge
     try:
-        print("canard")
         response = requests.get(f'https://www.gutenberg.org/cache/epub/{ID}/pg{ID}.txt')
         response.raise_for_status()
         content = response.text
@@ -42,6 +47,7 @@ def download_book(Dico_info, ID):
             End_index = i # on s'arrete juste avant le marker
             break
 
+
     # on reecrit par dessus
     with open(file_name, "w", encoding="utf-8") as livre:
         # truc de barbare mais on recolle toute nos phrases de notre liste de phrases ensemble si elles sont comprises entre la ligne de debut e de fin et on met un \n car dans une liste de phrase on a plus d'espace
@@ -50,14 +56,13 @@ def download_book(Dico_info, ID):
         # on reecrit
         livre.write(clean_content)
         
-    return ["Succes", (f"cache/{Dico_info[str(ID)]['title']}.txt")]
+    return ["Succes", (f"cache/{Dico_info[str(ID)]['title']}/{Dico_info[str(ID)]['title']}.txt")]
 
 
 
 
 def make_token(Dico_info, ID, Text):
-    file_nom = f"cache/{Dico_info[str(ID)]['title']}_token.txt"
+    file_nom = f"cache/{Dico_info[str(ID)]['title']}/{Dico_info[str(ID)]['title']}_token.txt"
     with open(file_nom, "w", encoding="utf-8") as cache_token:
-        toeknization = tokenize_data(Text)
-        print(type(toeknization))
+        toeknization = tokenize_data(Text, True, True)
         cache_token.write(json.dumps(toeknization))

@@ -2,12 +2,15 @@ import csv
 import argparse
 import requests
 import json
+import nltk
+
 
 # on import nos modules python qui vont nous servir a plein de chose, ( fais a la main c'est juste pour avoir un code plus propre)
 from Modules.Tokenization import tokenize_data
 from Modules.Normalize import run_normalize
 from Modules.Download_Book import download_book
-
+from Modules.postag import run_spacy_pipeline
+from Modules.decoupage import decoupage
 
 from collections import Counter
 
@@ -18,11 +21,12 @@ parser = argparse.ArgumentParser()
 
 # nos actions
 VariableType = parser.add_mutually_exclusive_group()
-VariableType.add_argument('--lexdiv', metavar='ID', type=int, nargs="+", help='lexdiv parameters follow by id')
+VariableType.add_argument('--lexdiv', metavar='ID', type=int, nargs="+", help='lexdiv parameters follow by ID')
+VariableType.add_argument('--entities', metavar='ID', type=int, nargs="+", help='entities parameters follow with ID')
+
 
 # notre nom pour les args
 args = parser.parse_args()
-
 
 
 
@@ -46,7 +50,6 @@ def Info_Book():
         # on va aller chercher pour chaque ID, le titre, l'author, le bookshelves et l'id
         Mydico.update({'id': key, 'title': row['Title'], 'authors': row['Authors'], 'bookshelves': row['Bookshelves']})
     return result
-
 
 Livre_infos = Info_Book()
 
@@ -100,6 +103,52 @@ def lexdiv():
     return Dict_lexdiv
 
 
-# SI on appelle notre argument dans le fichier
+
+def Entities():
+
+
+
+    Dict_entities = {}
+    Lst_characters = []
+    Lst_locations = []
+    ID = args.entities[0]
+    response = download_book(Livre_infos, ID)
+
+    decoupage(response[1])
+
+    # nameFIle = f"{response[1]}"
+    # with open(nameFIle, "r", encoding="utf-8") as book:
+    #     text_brut = book.read()   
+    
+
+    # nameFIle = f"{response[1][:-4]}_token.txt"
+    # with open(nameFIle, "r", encoding="utf-8") as txt:
+    #     tokens = json.load(txt)
+
+    # # print(tokens)
+    # tag =  run_spacy_pipeline(text_brut)
+
+    # for val in tag:
+    #     # print(val)
+    #     if val[1] == 'PERSON':
+    #         if val[0] not in Lst_characters:
+    #             # if val[2] == "PROPN":
+    #             Lst_characters.append(val[0])
+    #     if val[1] == "GPE" or val[1] == "LOC":
+    #         if val[0] not in Lst_locations:
+    #             Lst_locations.append(val[0])
+
+
+    # Dict_entities["characters"], Dict_entities["locations"] = Lst_characters, Lst_locations
+    # return(Dict_entities)
+
+
+
+
+# SI on appelle notre argument `--lexdiv` dans le fichier
 if args.lexdiv:
     print(lexdiv())
+
+# SI on appelle notre argument `--entities` dans le fichier
+if args.entities:
+    print(Entities())

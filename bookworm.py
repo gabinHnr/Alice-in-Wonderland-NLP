@@ -11,7 +11,9 @@ from Modules.Download_Book import download_book
 
 from collections import Counter
 
-
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download("punkt_tab")
 
 # initisalisation de notyre parser
 parser = argparse.ArgumentParser()
@@ -100,6 +102,61 @@ def lexdiv():
     return Dict_lexdiv
 
 
-# SI on appelle notre argument dans le fichier
+def summary():
+    ID = args.summarize[0]
+    response = download_book(Livre_infos, ID)
+    nameFile = response[1].split("/")[1]
+    with open(f"cache/{nameFile}/Chapter_1.txt", "r", encoding="utf-8") as txt:
+        print(txt.read())
+
+def Entities():
+
+
+
+    Dict_entities = {}
+    Lst_characters = []
+    Lst_locations = []
+    ID = args.entities[0]
+    response = download_book(Livre_infos, ID)
+
+    decoupage(response[1])
+
+    # nameFIle = f"{response[1]}"
+    # with open(nameFIle, "r", encoding="utf-8") as book:
+    #     text_brut = book.read()   
+    
+
+    # nameFIle = f"{response[1][:-4]}_token.txt"
+    # with open(nameFIle, "r", encoding="utf-8") as txt:
+    #     tokens = json.load(txt)
+
+    # # print(tokens)
+    # tag =  run_spacy_pipeline(text_brut)
+
+    # for val in tag:
+    #     # print(val)
+    #     if val[1] == 'PERSON':
+    #         if val[0] not in Lst_characters:
+    #             # if val[2] == "PROPN":
+    #             Lst_characters.append(val[0])
+    #     if val[1] == "GPE" or val[1] == "LOC":
+    #         if val[0] not in Lst_locations:
+    #             Lst_locations.append(val[0])
+
+
+    # Dict_entities["characters"], Dict_entities["locations"] = Lst_characters, Lst_locations
+    # return(Dict_entities)
+
+
+
+
+# SI on appelle notre argument `--lexdiv` dans le fichier
 if args.lexdiv:
     print(lexdiv())
+
+# SI on appelle notre argument `--entities` dans le fichier
+if args.entities:
+    print(Entities())
+
+if args.summarize:
+    print(summary())

@@ -22,9 +22,9 @@ from collections import Counter
 # initisalisation de notyre parser
 parser = argparse.ArgumentParser()
 
-nltk.download('stopwords')
-nltk.download('punkt')
-nltk.download("punkt_tab")
+# nltk.download('stopwords')
+# nltk.download('punkt')
+# nltk.download("punkt_tab")
 
 # nos actions
 parser.add_argument("ID", type=int)

@@ -3,7 +3,9 @@ def decoupage(file_name):
         text_brut = book.read()
 
     ligne = text_brut.splitlines()  # on le separe en ligne
-    print(Get_Content(text_brut))
+    All_content = Get_Content(ligne)
+    Lst_other_stop = All_content[0]
+
     Marker = "chapter " # on cherche les chapter
     # MarkerEnd = "the end"
     # Add_File_Chapter(file_name, 5)
@@ -23,6 +25,19 @@ def decoupage(file_name):
                 Add_File_Chapter(file_name, compteur, lst_ligne)
                 compteur+=1
                 lst_ligne = []
+
+
+        for ele in Lst_other_stop:
+            # tp = line.strip()
+            tp = " ".join(line.split())
+            eleCLear = " ".join(ele.split())
+            if tp.lower() == eleCLear.lower():
+                print(tp.lower(), eleCLear.lower())
+                if i > All_content[1]:
+                    Add_File_Chapter(file_name, compteur, lst_ligne)
+                    compteur+=1
+                    lst_ligne = []
+        
         lst_ligne.append(line)
     Add_File_Chapter(file_name, compteur, lst_ligne)
 
@@ -37,27 +52,36 @@ def Add_File_Chapter(file_name, Numero, text):
         livre.write(text)
 
 
+
+
+
 def Get_Content(lines):
-    marker = "Contents"
+    marker = "contents"
     collecting = False
+    started = False 
     contents = []
-    print(type(lines))
-    for line in lines:
-        if marker in line:
+    dernier_id = 0
+
+    for i, line in enumerate(lines):
+        clean = line.strip().lstrip("\ufeff")
+        # print(clean)
+        if clean.lower() == marker:
+            print("debug1")
             collecting = True
-            print("oui")
             continue
 
+        if collecting and not started and clean == "":
+            print("debug continue")
+            continue
 
-        if collecting and line.strip() == "":
+        if collecting and started and clean == "":
+            dernier_id = i
+            print("debug end")
             break
 
-
+ 
         if collecting:
-            contents.append(line)
-
-    return contents
-
-
-
-# decoupage("../cache/Moby-Dick; or, The Whale/Moby-Dick; or, The Whale.txt")
+            contents.append(clean)
+            started = True
+    print("prijnt finale", contents)
+    return [contents, dernier_id]

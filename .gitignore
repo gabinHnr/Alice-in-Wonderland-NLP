@@ -2,3 +2,5 @@ Myvenv
 
 Bastian
 cache/*
+
+__pycache__

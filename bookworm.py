@@ -5,6 +5,7 @@ import json
 import nltk
 from transformers import pipeline
 import os
+import sys
 
 # on import nos modules python qui vont nous servir a plein de chose, ( fais a la main c'est juste pour avoir un code plus propre)
 from Modules.Tokenization import tokenize_data
@@ -17,8 +18,6 @@ from Modules.Get_Topics import Get_topics
 
 from collections import Counter
 
-
-
 # initisalisation de notyre parser
 parser = argparse.ArgumentParser()
 
@@ -27,22 +26,23 @@ parser = argparse.ArgumentParser()
 # nltk.download("punkt_tab")
 
 # nos actions
-parser.add_argument("ID", type=int)
-VariableType = parser.add_mutually_exclusive_group()
-VariableType.add_argument('--lexdiv', action='store_true', help='lexdiv parameters follow by ID')
-VariableType.add_argument('--entities', action='store_true', help='entities parameters follow with ID')
-VariableType.add_argument('--summarize', action='store_true', help='summarize parameters follow with ID')
-VariableType.add_argument('--card', action='store_true', help='Card w/ all parameters follow with ID')
-VariableType.add_argument('--topics', action='store_true', help='topics parametres follow with ID')
-VariableType.add_argument('--similar', action='store_true', help='similar parameters follow with ID')
+def get_args():
+    parser.add_argument("ID", type=int)
+    VariableType = parser.add_mutually_exclusive_group()
+    VariableType.add_argument('--lexdiv', action='store_true', help='lexdiv parameters follow by ID')
+    VariableType.add_argument('--entities', action='store_true', help='entities parameters follow with ID')
+    VariableType.add_argument('--summarize', action='store_true', help='summarize parameters follow with ID')
+    VariableType.add_argument('--card', action='store_true', help='Card w/ all parameters follow with ID')
+    VariableType.add_argument('--topics', action='store_true', help='topics parametres follow with ID')
+    VariableType.add_argument('--similar', action='store_true', help='similar parameters follow with ID')
 
-# notre nom pour les args
-args = parser.parse_args()
+    # notre nom pour les args
+    return(parser.parse_args())
 
 
 
 
-def Info_Book():
+def Info_Book(streamlit = False):
     """
     Fonction qui permet de recuperer un dictionnaire contenant pour tout les livres du projet gutenberg une liste d'informations comme 
     le title, les authors, ...
@@ -68,7 +68,7 @@ Livre_infos = Info_Book()
 
 
 
-def lexdiv():
+def lexdiv(streamlit = False):
     """
     Fonction permettant de recuperer diverses informations issu de notre livre tokenize
 
@@ -80,7 +80,10 @@ def lexdiv():
     "mwf":float # number of word token divided by number of unique word tokens
     """
     Dict_lexdiv = {}
-    ID = args.ID
+    if streamlit: 
+        ID = streamlit
+    else:
+        ID = args.ID
     response = download_book(Livre_infos, ID)
 
     nameFIle = f"{response[1][:-4]}_token.txt"
@@ -113,10 +116,13 @@ def lexdiv():
 
     return Dict_lexdiv
 
-def summary():
+def summary(streamlit = False):
 
     ## Initialisation des différentes variables
-    ID = args.ID
+    if streamlit: 
+        ID = streamlit
+    else:
+        ID = args.ID
     download_livre = download_book(Livre_infos, ID)
     nameFile = download_livre[1].split("/")[1]
 
@@ -173,7 +179,7 @@ def longueur(response):
 
 
 
-def Entities():
+def Entities(streamlit = False):
     """
     FOnction qui permet de renvoyer un dictionnaiore contenant tout les personnages et lieux d'un livre donnee (avec ID)
 
@@ -188,7 +194,10 @@ def Entities():
     Dict_entities = {}
     Lst_characters = []
     Lst_locations = []
-    ID = args.ID
+    if streamlit: 
+        ID = streamlit
+    else:
+        ID = args.ID
     response = download_book(Livre_infos, ID)
 
     # on va decouper la reponse pour obtenir le fichier
@@ -230,7 +239,7 @@ def Entities():
 
 
 
-def topics():
+def topics(streamlit = False):
     """
     Fonction qui permet de recuperer les 10 mots les plus poresent par chapitre, ce qui permet d'en deduire le topics du chapitre
 
@@ -243,7 +252,10 @@ def topics():
     # on initialise nos variable
     Dico_Topics = {}
     Lst_Topics = []
-    ID = args.topics[0]
+    if streamlit: 
+        ID = streamlit
+    else:
+        ID = args.ID
     response = download_book(Livre_infos, ID)
     info_longueur = longueur(response)
     nbr_chap = info_longueur[0] - 2
@@ -270,33 +282,44 @@ def Similar():
 
 
 
-def Card():
+def Card(streamlit = False):
+    if streamlit: 
+        ID = streamlit
+    else:
+        args = get_args()
+        ID = args.ID
     Carte = {}
     # Carte["info"] = lexdiv()
-    Carte["lexdiv"] = lexdiv()
+    Carte["lexdiv"] = lexdiv(ID)
     # Carte["topics"] = lexdiv()
-    Carte["entities"] = Entities()
-    Carte["summary"] = summary()
+    Carte["entities"] = Entities(ID)
+    Carte["summary"] = summary(ID)
     # Carte["similar"] = summary()
     return (Carte)
 
+def is_streamlit():
+    return "streamlit" in sys.modules
+
+
+if not is_streamlit():
+    args = get_args()
 # SI on appelle notre argument `--lexdiv` dans le fichier
-if args.lexdiv:
-    print(lexdiv())
+    if args.lexdiv:
+        print(lexdiv())
 
-# SI on appelle notre argument `--entities` dans le fichier
-if args.entities:
-    print(Entities())
+    # SI on appelle notre argument `--entities` dans le fichier
+    if args.entities:
+        print(Entities())
 
-if args.summarize:
-    print(summary())
+    if args.summarize:
+        print(summary())
 
-if args.card:
-    print(Card())
-# SI on appelle notre argument `--topics` dans le fichier
-if args.topics:
-    print(topics())
+    if args.card:
+        print(Card())
+    # SI on appelle notre argument `--topics` dans le fichier
+    if args.topics:
+        print(topics())
 
-# SI on appelle notre argument `--similar` dans le fichier
-if args.similar:
-    print(Similar())
+    # SI on appelle notre argument `--similar` dans le fichier
+    if args.similar:
+        print(Similar())

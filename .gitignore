@@ -3,4 +3,4 @@ Myvenv
 Bastian
 cache/*
 
-__pycache__
+Modules/__pycache__/

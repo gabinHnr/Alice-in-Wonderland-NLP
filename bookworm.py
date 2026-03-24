@@ -3,7 +3,7 @@ import argparse
 import requests
 import json
 import nltk
-
+import os
 
 # on import nos modules python qui vont nous servir a plein de chose, ( fais a la main c'est juste pour avoir un code plus propre)
 from Modules.Tokenization import tokenize_data
@@ -11,6 +11,8 @@ from Modules.Normalize import run_normalize
 from Modules.Download_Book import download_book
 from Modules.postag import run_spacy_pipeline
 from Modules.decoupage import decoupage
+from Modules.Get_Topics import Get_topics
+
 
 from collections import Counter
 
@@ -23,7 +25,7 @@ parser = argparse.ArgumentParser()
 VariableType = parser.add_mutually_exclusive_group()
 VariableType.add_argument('--lexdiv', metavar='ID', type=int, nargs="+", help='lexdiv parameters follow by ID')
 VariableType.add_argument('--entities', metavar='ID', type=int, nargs="+", help='entities parameters follow with ID')
-
+VariableType.add_argument('--topics', metavar='ID', type=int, nargs="+", help='topics parametres follow with ID')
 
 # notre nom pour les args
 args = parser.parse_args()
@@ -104,10 +106,27 @@ def lexdiv():
 
 
 
+def longueur(response):
+    nameFIle = f"{response[1]}"
+    nameFIle = nameFIle.split("/")
+    nameFIle = f"{nameFIle[0]}/{nameFIle[1]}"
+    print(nameFIle)
+    PATH = nameFIle
+    files, dirs = 0, 0
+    for root, dirnames, filenames in os.walk(PATH):
+        print('Looking in:', root)
+        dirs += len(dirnames)
+        files += len(filenames)
+    
+    return (files, dirs, nameFIle)
+    
+
+
+
+
+
+
 def Entities():
-
-
-
     Dict_entities = {}
     Lst_characters = []
     Lst_locations = []
@@ -115,36 +134,54 @@ def Entities():
     response = download_book(Livre_infos, ID)
 
     decoupage(response[1])
-
-    # nameFIle = f"{response[1]}"
-    # with open(nameFIle, "r", encoding="utf-8") as book:
-    #     text_brut = book.read()   
     
 
-    # nameFIle = f"{response[1][:-4]}_token.txt"
-    # with open(nameFIle, "r", encoding="utf-8") as txt:
-    #     tokens = json.load(txt)
-
-    # # print(tokens)
-    # tag =  run_spacy_pipeline(text_brut)
-
-    # for val in tag:
-    #     # print(val)
-    #     if val[1] == 'PERSON':
-    #         if val[0] not in Lst_characters:
-    #             # if val[2] == "PROPN":
-    #             Lst_characters.append(val[0])
-    #     if val[1] == "GPE" or val[1] == "LOC":
-    #         if val[0] not in Lst_locations:
-    #             Lst_locations.append(val[0])
+    nameFIle = f"{response[1][:-4]}_token.txt"
+    with open(nameFIle, "r", encoding="utf-8") as txt:
+        tokens = json.load(txt)
+    
+    Info_longueur = longueur(response)
+    files = Info_longueur[0]
+    nameFIle = Info_longueur[2]
 
 
-    # Dict_entities["characters"], Dict_entities["locations"] = Lst_characters, Lst_locations
-    # return(Dict_entities)
+    for i in range(1, files-2):
+        with open(f"{nameFIle}/Chapter_{i}.txt", "r", encoding="utf-8") as book:
+            text_brut = book.read()
+        tag =  run_spacy_pipeline(text_brut)
+
+        for val in tag:
+            if len(val[0]) > 3:
+                if val[1] == 'PERSON':
+                    if val[0] not in Lst_characters:
+                        # if val[2] == "PROPN":
+                        Lst_characters.append(val[0])
+                if val[1] == "GPE" or val[1] == "LOC":
+                    if val[0] not in Lst_locations:
+                        Lst_locations.append(val[0])
+
+
+    Dict_entities["characters"], Dict_entities["locations"] = Lst_characters, Lst_locations
+    return(Dict_entities)
 
 
 
 
+def topics():
+    Dico_Topics = {}
+    Lst_Topics = []
+    ID = args.topics[0]
+    response = download_book(Livre_infos, ID)
+    info_longueur = longueur(response)
+    nbr_chap = info_longueur[0] - 2
+    for i in range(1, nbr_chap):
+        Lst_Topics.append((Get_topics(f"{info_longueur[2]}/Chapter_{i}.txt")))
+
+    for i, element in enumerate(Lst_Topics):
+        Dico_Topics[i] = element
+    
+    return(Dico_Topics)
+        
 # SI on appelle notre argument `--lexdiv` dans le fichier
 if args.lexdiv:
     print(lexdiv())
@@ -152,3 +189,7 @@ if args.lexdiv:
 # SI on appelle notre argument `--entities` dans le fichier
 if args.entities:
     print(Entities())
+
+# SI on appelle notre argument `--topics` dans le fichier
+if args.topics:
+    print(topics())

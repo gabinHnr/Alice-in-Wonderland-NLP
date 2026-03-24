@@ -4,3 +4,4 @@ Bastian
 cache/*
 
 Modules/__pycache__/
+__pycache__

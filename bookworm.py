@@ -4,7 +4,7 @@ import requests
 import json
 import nltk
 from transformers import pipeline
-
+import os
 
 # on import nos modules python qui vont nous servir a plein de chose, ( fais a la main c'est juste pour avoir un code plus propre)
 from Modules.Tokenization import tokenize_data
@@ -12,6 +12,8 @@ from Modules.Normalize import run_normalize
 from Modules.Download_Book import download_book
 from Modules.postag import run_spacy_pipeline
 from Modules.decoupage import decoupage
+from Modules.Get_Topics import Get_topics
+
 
 from collections import Counter
 
@@ -31,7 +33,8 @@ VariableType.add_argument('--lexdiv', action='store_true', help='lexdiv paramete
 VariableType.add_argument('--entities', action='store_true', help='entities parameters follow with ID')
 VariableType.add_argument('--summarize', action='store_true', help='summarize parameters follow with ID')
 VariableType.add_argument('--card', action='store_true', help='Card w/ all parameters follow with ID')
-
+VariableType.add_argument('--topics', action='store_true', help='topics parametres follow with ID')
+VariableType.add_argument('--similar', action='store_true', help='similar parameters follow with ID')
 
 # notre nom pour les args
 args = parser.parse_args()
@@ -58,13 +61,13 @@ def Info_Book():
         # on va aller chercher pour chaque ID, le titre, l'author, le bookshelves et l'id
         Mydico.update({'id': key, 'title': row['Title'], 'authors': row['Authors'], 'bookshelves': row['Bookshelves']})
     return result
-
+# on initialise notre variable Livre_infos pour quel soit accesible partout
 Livre_infos = Info_Book()
 
 
 
 
-# fonction qui nous permnet d'avoir notre dictionnaire demande pour le lexdiv
+
 def lexdiv():
     """
     Fonction permettant de recuperer diverses informations issu de notre livre tokenize
@@ -100,13 +103,13 @@ def lexdiv():
         length.append(len(mot))
     longueur_moyenne = sum(length)/len(length)
 
+    # on initialise le dictionnaire du lexdiv avec toute nos informations demandes
     Dict_lexdiv["tok"] = len(tokens)
     Dict_lexdiv["typ"] = tokens_unique
     Dict_lexdiv["hap"] = nbr_unique_occurence
     Dict_lexdiv["ttr"] = tokens_unique/len(tokens)
     Dict_lexdiv["mwl"] = longueur_moyenne
     Dict_lexdiv["mwf"] = len(tokens)/tokens_unique
-
 
     return Dict_lexdiv
 
@@ -142,6 +145,28 @@ def summary():
         for diviseur in division:
             reassemblage = " ".join(diviseur.split()[:600])
             result = summarizer(reassemblage, max_length=100, min_length=40, do_sample=False)
+def longueur(response):
+    """
+    Fonction permettant de recuperer le nombre de fichier, de directory et le nom du fichier, d'un emplacement donne en parametre
+
+    response -> parametre contenant l'emplacement d'un fichier ou directory aisni que le status de la reponse
+    nameFile -> variable contenant notre emplacement sans la reponse du status
+    return -> renvoie nombre de fichier =, de directory ainsi que le nom du fichier
+    """
+    nameFIle = f"{response[1]}"
+    nameFIle = nameFIle.split("/")
+    nameFIle = f"{nameFIle[0]}/{nameFIle[1]}"
+    PATH = nameFIle
+    files, dirs = 0, 0 # on initalise nos nombre
+    # on va passer dans chaque fichier ou dossier
+    for root, dirnames, filenames in os.walk(PATH):
+        dirs += len(dirnames)
+        files += len(filenames)
+    
+    return (files, dirs, nameFIle)
+    
+
+
 
             resume.append(result[0]["summary_text"])
 
@@ -153,39 +178,102 @@ def summary():
 def Entities():
 
 
+
+def Entities():
+    """
+    FOnction qui permet de renvoyer un dictionnaiore contenant tout les personnages et lieux d'un livre donnee (avec ID)
+
+    aucun parametre
+    se sert de la fonction `download_book`
+    se sert de la fonction `decoupage`
+    se sert de la fonction `run_spacy_pipeline`
+    
+    return -> dictionnaire complet avec 2 cle, `characters` et `locations` contenant chacun des valeurs lies aux livre
+    """
+    # on initialise les dictionnaire
     Dict_entities = {}
     Lst_characters = []
     Lst_locations = []
     ID = args.ID
     response = download_book(Livre_infos, ID)
 
+    # on va decouper la reponse pour obtenir le fichier
     decoupage(response[1])
-
-    # nameFIle = f"{response[1]}"
-    # with open(nameFIle, "r", encoding="utf-8") as book:
-    #     text_brut = book.read()   
     
 
     # nameFIle = f"{response[1][:-4]}_token.txt"
     # with open(nameFIle, "r", encoding="utf-8") as txt:
     #     tokens = json.load(txt)
-
-    # # print(tokens)
-    # tag =  run_spacy_pipeline(text_brut)
-
-    # for val in tag:
-    #     # print(val)
-    #     if val[1] == 'PERSON':
-    #         if val[0] not in Lst_characters:
-    #             # if val[2] == "PROPN":
-    #             Lst_characters.append(val[0])
-    #     if val[1] == "GPE" or val[1] == "LOC":
-    #         if val[0] not in Lst_locations:
-    #             Lst_locations.append(val[0])
+    
 
 
-    # Dict_entities["characters"], Dict_entities["locations"] = Lst_characters, Lst_locations
-    # return(Dict_entities)
+    Info_longueur = longueur(response)
+    files = Info_longueur[0]
+    nameFIle = Info_longueur[2]
+
+    # on va prenjdre le nombre de fichier du directory -2 et en partant de 0, car nous avons tout les chaater + le livre ainsi que le fichier des tokens
+    for i in range(1, files-2):
+        with open(f"{nameFIle}/Chapter_{i}.txt", "r", encoding="utf-8") as book:
+            text_brut = book.read()
+        # on va aller faire la fonction pour obtenir une liste [token format txt, son type (adj, verbe, ...), son tag (Personnage, localisation, ..)]
+        tag =  run_spacy_pipeline(text_brut)
+
+        # on va parcourir notre liste, si le tag est bien une personne ou alors un lieux on l'ajoute
+        for val in tag:
+            if len(val[0]) > 3:
+                if val[1] == 'PERSON':
+                    if val[0] not in Lst_characters:
+                        # if val[2] == "PROPN":
+                        Lst_characters.append(val[0])
+                if val[1] == "GPE" or val[1] == "LOC":
+                    if val[0] not in Lst_locations:
+                        Lst_locations.append(val[0])
+
+    # on initalise nos dictionnaire
+    Dict_entities["characters"], Dict_entities["locations"] = Lst_characters, Lst_locations
+    return(Dict_entities)
+
+
+
+
+def topics():
+    """
+    Fonction qui permet de recuperer les 10 mots les plus poresent par chapitre, ce qui permet d'en deduire le topics du chapitre
+
+    ne prend pas de parametre
+    se sert de la fonction `download_book`
+    se sert de la fonction `Get_topics`
+
+    return --> renvoie un dictionnaire avec en cle le numero du chapitre, et en valeur uen liste des 10 mots les plus presents
+    """
+    # on initialise nos variable
+    Dico_Topics = {}
+    Lst_Topics = []
+    ID = args.topics[0]
+    response = download_book(Livre_infos, ID)
+    info_longueur = longueur(response)
+    nbr_chap = info_longueur[0] - 2
+
+    # on va utiliser la fonction Get_topics pour aller chercher pour chacun de nos chapitre les indformartions necessaire
+    for i in range(1, nbr_chap):
+        Lst_Topics.append((Get_topics(f"{info_longueur[2]}/Chapter_{i}.txt")))
+
+    # on passe pour chaque element de de notre liste de topics
+    for i, element in enumerate(Lst_Topics):
+        Dico_Topics[i] = element
+    
+    # renvoie le dictionnaire contenant pour chaque cahpitre nos liste de mot
+    return(Dico_Topics)
+        
+
+
+
+def Similar():
+    return "test"
+
+
+
+
 
 
 def Card():
@@ -211,3 +299,10 @@ if args.summarize:
 
 if args.card:
     print(Card())
+# SI on appelle notre argument `--topics` dans le fichier
+if args.topics:
+    print(topics())
+
+# SI on appelle notre argument `--similar` dans le fichier
+if args.similar:
+    print(Similar())

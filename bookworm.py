@@ -145,6 +145,12 @@ def summary():
         for diviseur in division:
             reassemblage = " ".join(diviseur.split()[:600])
             result = summarizer(reassemblage, max_length=100, min_length=40, do_sample=False)
+            resume.append(result[0]["summary_text"])
+
+    # Enfin, on fait un résumé de tous les résumés pour avoir un "résumé final"
+    resume_final = summarizer(" ".join(resume), min_length=80)
+    return(resume_final[0]["summary_text"])
+
 def longueur(response):
     """
     Fonction permettant de recuperer le nombre de fichier, de directory et le nom du fichier, d'un emplacement donne en parametre
@@ -164,18 +170,6 @@ def longueur(response):
         files += len(filenames)
     
     return (files, dirs, nameFIle)
-    
-
-
-
-            resume.append(result[0]["summary_text"])
-
-    # Enfin, on fait un résumé de tous les résumés pour avoir un "résumé final"
-    resume_final = summarizer(" ".join(resume), min_length=80)
-    return(resume_final[0]["summary_text"])
-    
-
-def Entities():
 
 
 

@@ -1,0 +1,60 @@
+body,html{
+    margin : 0px;
+    overscroll-behavior-y: none;
+}
+
+.logo{
+    position : absolute;
+    left : 0;
+    top : 0;
+    width : 10%
+}
+
+.divRecherche{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #7ebed0;
+    height : 7vh;
+}
+
+.Recherche{
+    width: 30%;
+    font-size:100%;
+    border-radius: 20px 0 0 20px;
+    padding: 9px 16px;
+    border: none;
+}
+
+.BtnRecherche{
+    background-color: #4C8FA8;
+    color: white;
+    border: none;
+    padding: 0px 24px;
+    border-radius: 0 20px 20px 0;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: auto;
+    text-align: center;
+    height: 60%;
+}
+
+.Bleu{
+    background-color: #c7dde3;
+    height : 7vh;
+}
+
+.emplCarte{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 86vh;
+}
+
+.divCarte{
+    height : 85%;
+    width : 30%;
+    border : gray solid;
+    background-color: #e4dede;
+    margin : 5%;
+}

@@ -3,6 +3,7 @@ import argparse
 import requests
 import json
 import nltk
+from transformers import pipeline
 import os
 
 # on import nos modules python qui vont nous servir a plein de chose, ( fais a la main c'est juste pour avoir un code plus propre)
@@ -21,12 +22,19 @@ from collections import Counter
 # initisalisation de notyre parser
 parser = argparse.ArgumentParser()
 
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download("punkt_tab")
+
 # nos actions
+parser.add_argument("ID", type=int)
 VariableType = parser.add_mutually_exclusive_group()
-VariableType.add_argument('--lexdiv', metavar='ID', type=int, nargs="+", help='lexdiv parameters follow by ID')
-VariableType.add_argument('--entities', metavar='ID', type=int, nargs="+", help='entities parameters follow with ID')
-VariableType.add_argument('--topics', metavar='ID', type=int, nargs="+", help='topics parametres follow with ID')
-VariableType.add_argument('--similar', metavar='ID', type=int, nargs="+", help='similar parameters follow with ID')
+VariableType.add_argument('--lexdiv', action='store_true', help='lexdiv parameters follow by ID')
+VariableType.add_argument('--entities', action='store_true', help='entities parameters follow with ID')
+VariableType.add_argument('--summarize', action='store_true', help='summarize parameters follow with ID')
+VariableType.add_argument('--card', action='store_true', help='Card w/ all parameters follow with ID')
+VariableType.add_argument('--topics', action='store_true', help='topics parametres follow with ID')
+VariableType.add_argument('--similar', action='store_true', help='similar parameters follow with ID')
 
 # notre nom pour les args
 args = parser.parse_args()
@@ -72,7 +80,7 @@ def lexdiv():
     "mwf":float # number of word token divided by number of unique word tokens
     """
     Dict_lexdiv = {}
-    ID = args.lexdiv[0]
+    ID = args.ID
     response = download_book(Livre_infos, ID)
 
     nameFIle = f"{response[1][:-4]}_token.txt"
@@ -105,8 +113,38 @@ def lexdiv():
 
     return Dict_lexdiv
 
+def summary():
 
+    ## Initialisation des différentes variables
+    ID = args.ID
+    download_livre = download_book(Livre_infos, ID)
+    nameFile = download_livre[1].split("/")[1]
 
+    summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+
+    resume = []
+
+    ## On parcourt les n-chapitres que l'on veut pour pouvoir faire un résumé.
+    for k in range (1, 5):
+        # On ouvre chaque chapitre à la fois
+        with open(f"cache/{nameFile}/Chapter_{k}.txt", "r", encoding="utf-8") as txt:
+            lecture = txt.read()
+
+        # On "split" chaque chapitre pour éviter " C H A P T E R I . D o w n t h e R a b b i t - H o l e "
+        seplecture = lecture.split()
+        total = len(seplecture)
+
+        ## Ceci permet de divisé le texte pour le résume en deux fois car sinon il y a un dépassement de mémoire.
+        division = [
+            " ".join(seplecture[0:total//2]),
+            " ".join(seplecture[total//2:total:])
+        ]
+
+        # on parcourt donc les deux parties de la division et on ne prend que les 600 premiers caractères de chaque partie 
+        # pour éviter le dépassement de mémoire
+        for diviseur in division:
+            reassemblage = " ".join(diviseur.split()[:600])
+            result = summarizer(reassemblage, max_length=100, min_length=40, do_sample=False)
 def longueur(response):
     """
     Fonction permettant de recuperer le nombre de fichier, de directory et le nom du fichier, d'un emplacement donne en parametre
@@ -130,6 +168,14 @@ def longueur(response):
 
 
 
+            resume.append(result[0]["summary_text"])
+
+    # Enfin, on fait un résumé de tous les résumés pour avoir un "résumé final"
+    resume_final = summarizer(" ".join(resume), min_length=80)
+    return(resume_final[0]["summary_text"])
+    
+
+def Entities():
 
 
 
@@ -148,8 +194,7 @@ def Entities():
     Dict_entities = {}
     Lst_characters = []
     Lst_locations = []
-    ID = args.entities[0]
-    # on va chercher le mlivre avec la fonction download_book
+    ID = args.ID
     response = download_book(Livre_infos, ID)
 
     # on va decouper la reponse pour obtenir le fichier
@@ -231,7 +276,15 @@ def Similar():
 
 
 
-
+def Card():
+    Carte = {}
+    # Carte["info"] = lexdiv()
+    Carte["lexdiv"] = lexdiv()
+    # Carte["topics"] = lexdiv()
+    Carte["entities"] = Entities()
+    Carte["summary"] = summary()
+    # Carte["similar"] = summary()
+    return (Carte)
 
 # SI on appelle notre argument `--lexdiv` dans le fichier
 if args.lexdiv:
@@ -241,6 +294,11 @@ if args.lexdiv:
 if args.entities:
     print(Entities())
 
+if args.summarize:
+    print(summary())
+
+if args.card:
+    print(Card())
 # SI on appelle notre argument `--topics` dans le fichier
 if args.topics:
     print(topics())

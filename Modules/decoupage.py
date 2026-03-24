@@ -12,7 +12,6 @@ def decoupage(file_name):
     compteur = 0        # compteur pour connaitre le chapitre em cours
     lst_ligne= []
     for i, line in enumerate(ligne):        # on va verifier dans chaque ligne 
-        print(line)
         clean = line.strip()
         if Marker in line or MarkerEnd in line:
             # print(repr(line))    # pour verifier a quoi ressembler vrqaiment une ligne

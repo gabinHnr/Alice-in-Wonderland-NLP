@@ -24,5 +24,4 @@ def run_spacy_pipeline(text_brut):
     # text = " ".join(tokens)
     doc = nlp(text_brut)
     liste_taggee = [(token.text, token.ent_type_, token.pos_) for token in doc]
-        
     return liste_taggee

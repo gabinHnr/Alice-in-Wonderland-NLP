@@ -12,7 +12,7 @@ from Modules.Normalize import run_normalize
 from Modules.Download_Book import download_book
 from Modules.postag import run_spacy_pipeline
 from Modules.decoupage import decoupage
-    
+
 from collections import Counter
 
 
@@ -196,7 +196,7 @@ def Card():
     Carte["entities"] = Entities()
     Carte["summary"] = summary()
     # Carte["similar"] = summary()
-    print (Carte)
+    return (Carte)
 
 # SI on appelle notre argument `--lexdiv` dans le fichier
 if args.lexdiv:

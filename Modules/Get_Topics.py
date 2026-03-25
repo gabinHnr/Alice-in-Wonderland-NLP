@@ -1,6 +1,9 @@
 import nltk
 import string
 from nltk.corpus import stopwords
+
+
+
 stop_words = stopwords.words("english")
 
 def Get_topics(File):
@@ -23,4 +26,25 @@ def Get_topics(File):
 
     frequence = nltk.FreqDist(tp)
     [lst_word.append(mots) for mots in frequence.most_common(10)]
+    Get_main_Topic(lst_word)
     return(lst_word)
+
+
+def Get_main_Topic(Lst_word):
+    import spacy
+    from sklearn.cluster import KMeans
+
+
+
+
+    # nlp = spacy.load("fr_core_news_md")
+
+    # words = Lst_word
+
+    # vectors = [nlp(w).vector for w in words]
+
+    # kmeans = KMeans(n_clusters=2)
+    # labels = kmeans.fit_predict(vectors)
+
+    # for w, l in zip(words, labels):
+    #     print(w, "→ cluster", l)

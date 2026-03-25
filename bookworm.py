@@ -5,6 +5,7 @@ import json
 import nltk
 from transformers import pipeline
 import os
+import pandas as pd
 import sys
 
 # on import nos modules python qui vont nous servir a plein de chose, ( fais a la main c'est juste pour avoir un code plus propre)
@@ -24,7 +25,7 @@ parser = argparse.ArgumentParser()
 # nltk.download('stopwords')
 # nltk.download('punkt')
 # nltk.download("punkt_tab")
-
+# python3 -m spacy download fr_core_news_sm
 # nos actions
 def get_args():
     parser.add_argument("ID", type=int)
@@ -63,6 +64,20 @@ def Info_Book(streamlit = False):
     return result
 # on initialise notre variable Livre_infos pour quel soit accesible partout
 Livre_infos = Info_Book()
+
+
+
+
+def Creat_relation():
+    writepath = 'cache/relation.csv'
+
+    if not os.path.exists(writepath):
+        with open(writepath, 'w') as f:
+            f.write("Book;Authors;Bookshelves;Vector;Similar")
+    else:
+        df = pd.read_csv(writepath, sep=";")
+        df.to_csv(writepath, sep=';', index=False)
+Creat_relation()
 
 
 
@@ -205,7 +220,7 @@ def Entities(streamlit = False):
     
 
     # nameFIle = f"{response[1][:-4]}_token.txt"
-    # with open(nameFIle, "r", encoding="utf-8") as txt:
+    # with open(nameFIle, "r", encoding="utf-8") as txt:couleur
     #     tokens = json.load(txt)
     
 

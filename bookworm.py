@@ -43,7 +43,7 @@ def get_args():
 
 
 
-def Info_Book(streamlit = False):
+def Info_Book():
     """
     Fonction qui permet de recuperer un dictionnaire contenant pour tout les livres du projet gutenberg une liste d'informations comme 
     le title, les authors, ...
@@ -65,6 +65,8 @@ def Info_Book(streamlit = False):
 # on initialise notre variable Livre_infos pour quel soit accesible partout
 Livre_infos = Info_Book()
 
+def Info_Book_ID(ID):
+    return Livre_infos.get(str(ID), None)
 
 
 
@@ -83,7 +85,8 @@ Creat_relation()
 
 
 
-def lexdiv(streamlit = False):
+
+def lexdiv(ID):
     """
     Fonction permettant de recuperer diverses informations issu de notre livre tokenize
 
@@ -95,10 +98,6 @@ def lexdiv(streamlit = False):
     "mwf":float # number of word token divided by number of unique word tokens
     """
     Dict_lexdiv = {}
-    if streamlit: 
-        ID = streamlit
-    else:
-        ID = args.ID
     response = download_book(Livre_infos, ID)
 
     nameFIle = f"{response[1][:-4]}_token.txt"
@@ -131,13 +130,9 @@ def lexdiv(streamlit = False):
 
     return Dict_lexdiv
 
-def summary(streamlit = False):
+def summary(ID):
 
     ## Initialisation des différentes variables
-    if streamlit: 
-        ID = streamlit
-    else:
-        ID = args.ID
     download_livre = download_book(Livre_infos, ID)
     nameFile = download_livre[1].split("/")[1]
 
@@ -194,7 +189,7 @@ def longueur(response):
 
 
 
-def Entities(streamlit = False):
+def Entities(ID):
     """
     FOnction qui permet de renvoyer un dictionnaiore contenant tout les personnages et lieux d'un livre donnee (avec ID)
 
@@ -209,10 +204,6 @@ def Entities(streamlit = False):
     Dict_entities = {}
     Lst_characters = []
     Lst_locations = []
-    if streamlit: 
-        ID = streamlit
-    else:
-        ID = args.ID
     response = download_book(Livre_infos, ID)
 
     # on va decouper la reponse pour obtenir le fichier
@@ -254,7 +245,7 @@ def Entities(streamlit = False):
 
 
 
-def topics(streamlit = False):
+def topics(ID):
     """
     Fonction qui permet de recuperer les 10 mots les plus poresent par chapitre, ce qui permet d'en deduire le topics du chapitre
 
@@ -267,10 +258,6 @@ def topics(streamlit = False):
     # on initialise nos variable
     Dico_Topics = {}
     Lst_Topics = []
-    if streamlit: 
-        ID = streamlit
-    else:
-        ID = args.ID
     response = download_book(Livre_infos, ID)
     info_longueur = longueur(response)
     nbr_chap = info_longueur[0] - 2
@@ -281,7 +268,7 @@ def topics(streamlit = False):
 
     # on passe pour chaque element de de notre liste de topics
     for i, element in enumerate(Lst_Topics):
-        Dico_Topics[i] = element
+        Dico_Topics[i+1] = element
     
     # renvoie le dictionnaire contenant pour chaque cahpitre nos liste de mot
     return(Dico_Topics)
@@ -297,16 +284,11 @@ def Similar():
 
 
 
-def Card(streamlit = False):
-    if streamlit: 
-        ID = streamlit
-    else:
-        args = get_args()
-        ID = args.ID
+def Card(ID):
     Carte = {}
-    # Carte["info"] = lexdiv()
+    Carte["info"] = Info_Book_ID(ID)
     Carte["lexdiv"] = lexdiv(ID)
-    # Carte["topics"] = lexdiv()
+    Carte["topics"] = topics(ID)
     Carte["entities"] = Entities(ID)
     Carte["summary"] = summary(ID)
     # Carte["similar"] = summary()
@@ -320,20 +302,20 @@ if not is_streamlit():
     args = get_args()
 # SI on appelle notre argument `--lexdiv` dans le fichier
     if args.lexdiv:
-        print(lexdiv())
+        print(lexdiv(args.ID))
 
     # SI on appelle notre argument `--entities` dans le fichier
-    if args.entities:
-        print(Entities())
+    # if args.entities:
+    #     print(Entities(args.ID))
 
     if args.summarize:
-        print(summary())
+        print(summary(args.ID))
 
     if args.card:
-        print(Card())
+        print(Card(args.ID))
     # SI on appelle notre argument `--topics` dans le fichier
     if args.topics:
-        print(topics())
+        print(topics(args.ID))
 
     # SI on appelle notre argument `--similar` dans le fichier
     if args.similar:

@@ -1,9 +1,9 @@
 import nltk
 import string
 from nltk.corpus import stopwords
+import spacy
 
-
-
+nlp = spacy.load("fr_core_news_md")
 stop_words = stopwords.words("english")
 
 def Get_topics(File):
@@ -26,25 +26,23 @@ def Get_topics(File):
 
     frequence = nltk.FreqDist(tp)
     [lst_word.append(mots) for mots in frequence.most_common(10)]
-    Get_main_Topic(lst_word)
-    return(lst_word)
-
-
-def Get_main_Topic(Lst_word):
-    import spacy
-    from sklearn.cluster import KMeans
+    
+    return(lst_word, get_book_vector(lst_word, nlp))
 
 
 
+import numpy as np
 
-    # nlp = spacy.load("fr_core_news_md")
+def get_book_vector(lst_word, nlp):
+    """
+    Cette fonction va generer une matrice (donc une liste de liste) avec les differents vecteurs de nos top 10 word pour chaque chapitre,
+    cela va permettre de definir un vecteur generale pour comparer un livre A avec un livre B
+    """
+    vectors = [nlp(w[0]).vector for w in lst_word if nlp(w[0]).has_vector]
+    
+    if not vectors:
+        return None
+    
 
-    # words = Lst_word
-
-    # vectors = [nlp(w).vector for w in words]
-
-    # kmeans = KMeans(n_clusters=2)
-    # labels = kmeans.fit_predict(vectors)
-
-    # for w, l in zip(words, labels):
-    #     print(w, "→ cluster", l)
+    book_vector = np.mean(vectors, axis=0)
+    return(book_vector)

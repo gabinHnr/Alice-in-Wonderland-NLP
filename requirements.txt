@@ -6,3 +6,7 @@ transformers
 string
 spacy
 os
+sklearn
+numpy
+pandas
+re

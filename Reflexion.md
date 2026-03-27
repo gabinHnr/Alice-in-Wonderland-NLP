@@ -23,6 +23,17 @@ Avec ce combo, les performances sont les plus minimales selon les cas de figure 
 Maintenant nous allons rentrer dans le plus dur : les topics.
 Pour les topics, nous avons opté pour un mix des deux. Pour la partie des top 10 des mots les plus présents, nous utilisons NLTK qui fait très bien le travail. Mais pour la partie des vecteurs, nous utilisons NLTK couplé avec NumPy pour obtenir une matrice de vecteurs. Nous verrons par la suite pourquoi nous voulons des vecteurs.
 
+
+### Entities
+
+Entities sert à trouver les personnages du livre ainsi que les localisations. C'est la partie la moins précise de notre projet. Par manque de temps mais également par choix, nous n'avons pas pu la rendre la plus précise possible. Pour la rendre extrêmement précise, cela demande une quantité de ressources absurde et non conforme à notre projet.
+
+Pour améliorer son rendu, nous aurions pu faire un nettoyage "manuel" qui permettrait de retirer les aberrances qui ressortent dans plusieurs livres.
+
+Pour entités, nous utilisons Spacy avec notamment `run_spacy_pipeline` pour régler le problème d'espace. Nous passons un à un nos chapitres et nous utilisons d'autres fonctions citées précédemment.
+
+À noter que cette fonction est présente dans le fichier `bookeworm.py` et non dans un fichier séparé dans module pour plus de simplicité et à la demande d'un membre pédagogique.
+
 ### Similar
 
 Pour continuer, nous allons voir similar. Similar étant l'une des deux fonctions les plus dures lors de ce projet. Il nous était demandé de ne réaliser les similar que pour 21 livres donnés. Nous trouvions cela dommage, nous sommes donc partis dans l'optique de pouvoir prendre le plus de livres possible.

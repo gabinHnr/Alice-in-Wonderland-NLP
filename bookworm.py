@@ -73,6 +73,9 @@ def Info_Book_ID(ID):
 
 
 def Creat_relation():
+    """
+    FOnction qui permet de creer le csv de relation dans le cache si il n'existe pas deja
+    """
     writepath = 'cache/relation.csv'
 
     if not os.path.exists(writepath):

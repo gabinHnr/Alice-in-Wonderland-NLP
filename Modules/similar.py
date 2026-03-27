@@ -163,5 +163,5 @@ def Get_Similaire(Book_Data, Topics_Data):
 
     Str_similar = df.loc[i, "Similar"]
     Lst_similar_final = Str_similar.split(",")
-    return df.loc[i, "Similar"]
+    return Lst_similar_final
 

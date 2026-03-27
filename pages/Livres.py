@@ -139,6 +139,8 @@ if check:
         st.markdown(f'<p class="montexte">{schema["entities"]["characters"]}</p>', unsafe_allow_html=True)
         st.markdown('<p class="montitre">Lieux</p>', unsafe_allow_html=True)
         st.markdown(f'<p class="montexte">{schema["entities"]["locations"]}</p>', unsafe_allow_html=True)
+        st.markdown('<p class="montitre">Livre similaire</p>', unsafe_allow_html=True)
+        st.markdown(f'<p class="montexte">{schema["similar"]}</p>', unsafe_allow_html=True)
 
         st.markdown('</div></div>', unsafe_allow_html=True)
 else:

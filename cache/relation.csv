@@ -123,7 +123,7 @@ Alice's Adventures in Wonderland;Carroll, Lewis, 1832-1898;"Children's Literatur
    0.27636653  1.6623766   0.95804894  0.916629   -0.98511153  0.06382799
   -1.9026439   0.87415904  0.677601    0.10003599  0.01544056  2.1633651
    0.6228655   0.9016795  -0.3231521   0.4142417  -1.8049386  -0.81097543
-   0.4129303  -1.124717   -0.43791547  1.1897317   0.10880412  0.6929    ]]";Through the Looking-Glass,Peter Pan
+   0.4129303  -1.124717   -0.43791547  1.1897317   0.10880412  0.6929    ]]";Through the Looking-Glass,Treasure Island,Peter Pan
 Peter Pan;Barrie, J. M. (James Matthew), 1860-1937;"Children's Literature; Movie Books; Category: Children & Young Adult Reading; Category: Adventure; Category: Novels; Category: Classics of Literature; Category: British Literature";"[[ 2.11084008e-01  1.00148988e+00  2.95223862e-01  2.21289992e-01
    6.24498010e-01 -1.16974235e+00 -3.43396604e-01 -2.02448702e+00
   -6.50231779e-01  3.04828823e-01  8.88391495e-01 -1.03464496e+00
@@ -198,7 +198,7 @@ Peter Pan;Barrie, J. M. (James Matthew), 1860-1937;"Children's Literature; Movie
    7.48180151e-02 -9.68382321e-03  3.20362985e-01  2.30566525e+00
    3.19952965e-01  4.99999106e-01  2.58956015e-01  8.10934380e-02
   -1.55564117e+00  7.73291945e-01  6.60868526e-01 -2.26312011e-01
-   3.07792991e-01  7.08306015e-01  5.17282188e-01 -4.77251053e-01]]";"Treasure Island,Frankenstein; or, the modern prometheus,Through the Looking-Glass,Alice's Adventures in Wonderland"
+   3.07792991e-01  7.08306015e-01  5.17282188e-01 -4.77251053e-01]]";"Through the Looking-Glass,Alice's Adventures in Wonderland,Treasure Island,Frankenstein; or, the modern prometheus"
 Treasure Island;"Stevenson, Robert Louis, 1850-1894; Rhead, Louis, 1857-1926 [Illustrator]";"Children's Literature; Historical Fiction; Best Books Ever Listings; Pirates, Buccaneers, Corsairs, etc.; Category: Adventure; Category: Novels; Category: Classics of Literature; Category: British Literature";"[[ 2.75103096e-02  1.05152357e+00 -1.44196540e-01 -3.08856547e-01
    1.12551749e+00 -1.10244405e+00 -1.04088902e+00 -2.12201905e+00
   -5.88188052e-01  8.27786803e-01  1.65111291e+00 -6.39798522e-01
@@ -273,7 +273,7 @@ Treasure Island;"Stevenson, Robert Louis, 1850-1894; Rhead, Louis, 1857-1926 [Il
    5.58191001e-01 -5.29370964e-01  1.32816792e+00  2.25200129e+00
   -4.41671044e-01 -4.60216999e-01 -6.26726031e-01 -6.21116996e-01
   -6.46422505e-01  5.90588927e-01  2.62324214e-01 -2.37129685e-02
-   5.69171011e-01  1.19182801e+00  1.03963590e+00 -1.19866502e+00]]";Peter Pan,Through the Looking-Glass
+   5.69171011e-01  1.19182801e+00  1.03963590e+00 -1.19866502e+00]]";Through the Looking-Glass,Alice's Adventures in Wonderland,Peter Pan
 "Frankenstein; or, the modern prometheus";Shelley, Mary Wollstonecraft, 1797-1851;"Precursors of Science Fiction; Gothic Fiction; Movie Books; Science Fiction by Women; Category: Science-Fiction & Fantasy; Category: Novels; Category: Classics of Literature; Category: British Literature";"[[ 0.10255599  0.016987   -0.772989    0.18971701  0.46541435 -0.08800197
    0.23043998 -2.3668742  -1.4336243  -0.0281428   1.440722   -1.009023
   -0.12264381  2.0721703  -1.089108    0.53806406 -0.64866304 -1.8920689

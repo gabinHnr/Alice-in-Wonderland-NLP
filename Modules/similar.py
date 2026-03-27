@@ -119,7 +119,7 @@ def Get_Similaire(Book_Data, Topics_Data):
             
             # si le score du livre est au dessus de 1 on considere que c'est un livre similaire donc on l'ajoute
             if Score > 1:
-                Lst_Similar.append(df.loc[Best_Score[0], "Book"])
+                Lst_Similar.append(df.loc[i, "Book"])
         
         else:
             Index_own = i   # sert a savoir quel est l'index du livre de base
@@ -161,7 +161,6 @@ def Get_Similaire(Book_Data, Topics_Data):
 
 
 
-    Str_similar = df.loc[i, "Similar"]
-    Lst_similar_final = Str_similar.split(",")
-    return Lst_similar_final
+    Str_similar = df.loc[Index_own, "Similar"]
+    return [] if pd.isna(Str_similar) or Str_similar == "" else Str_similar.split(",")
 

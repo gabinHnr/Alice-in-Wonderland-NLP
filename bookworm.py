@@ -18,6 +18,15 @@ from Modules.decoupage import decoupage
 from Modules.Get_Topics import Get_topics, get_book_vector
 
 
+import nltk
+from nltk.tokenize import sent_tokenize
+from nltk.stem import PorterStemmer
+from nltk.corpus import stopwords
+from heapq import nlargest
+
+nltk.download('stopwords')
+nltk.download('punkt')
+
 from collections import Counter
 
 # initisalisation de notyre parser
@@ -141,6 +150,32 @@ def lexdiv(ID):
 
 
 def summary(ID):
+    download_livre = download_book(Livre_infos, ID)
+    nameFile = download_livre[1].split("/")[1]
+    with open(f"cache/{nameFile}/{nameFile}.txt", "r", encoding="utf-8") as txt:
+        lecture = txt.read()
+    sentences = sent_tokenize(lecture[:len(lecture)//4])
+    stemmer = PorterStemmer()
+    stop_words = set(stopwords.words("french"))
+    words = []
+    for k in sentences:
+        for j in nltk.word_tokenize(k):
+            if j not in stop_words and j.isalpha():
+                words.append(stemmer.stem(j))
+    frequence = nltk.FreqDist(words)
+    dixplusfrequent = [mots[0] for mots in frequence.most_common(10)]
+    resume = []
+    for k in sentences:
+        motsphrase = nltk.word_tokenize(k.lower())
+        score = 0
+        for j in motsphrase:
+            if stemmer.stem(j) in dixplusfrequent:
+                score += 1
+        resume.append((k, score))
+    for k in nlargest(3, resume, key=lambda x: x[1]):
+        return(k[0])
+
+def summarycomplet(ID):
 
     ## Initialisation des différentes variables
     download_livre = download_book(Livre_infos, ID)
@@ -151,7 +186,7 @@ def summary(ID):
     resume = []
 
     ## On parcourt les n-chapitres que l'on veut pour pouvoir faire un résumé.
-    for k in range (1, 5):
+    for k in range (1, 3):
         # On ouvre chaque chapitre à la fois
         with open(f"cache/{nameFile}/Chapter_{k}.txt", "r", encoding="utf-8") as txt:
             lecture = txt.read()
@@ -292,15 +327,19 @@ def Similar(ID):
 
 
 
-def Card(ID):
+def Card(ID, large=False):
     Carte = {}
     Carte["info"] = Info_Book_ID(ID)
     Carte["lexdiv"] = lexdiv(ID)
     Carte["topics"] = topics(ID)
     Carte["entities"] = Entities(ID)
-    Carte["summary"] = summary(ID)
+    if large:
+        Carte["summary"] = summarycomplet(ID)
+    else:
+        Carte["summary"] = summary(ID)
     Upd_relation(Carte["info"], Carte['topics'])
     Carte["similar"] = Get_Similaire(Carte["info"], Carte['topics'])
+    # Carte["similar"] = summary()
     return (Carte)
 
 def is_streamlit():

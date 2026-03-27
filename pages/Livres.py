@@ -5,9 +5,12 @@ from bookworm import Card
 
 
 @st.cache_data
-def load_data(ID):
-    return Card(ID)
-
+def load_data(ID, modele_large):
+    if modele_large:
+        return Card(ID, True)
+    else:
+        return Card(ID)
+    
 st.markdown('<div class="bandeaubleu">''</div>', unsafe_allow_html=True)
 st.markdown('<div class="bandeaubleuclair">''</div>', unsafe_allow_html=True)
 col1_top, col2_top, col3_top = st.columns([1,2,1], gap="large")
@@ -102,6 +105,8 @@ st.markdown("""
 
 with col2_top:
     check = st.text_input("")
+with col3_top:
+    modèlelarge = st.checkbox("Modèle large ?", value=False)
 
 if check:
     filtered = CSV[CSV["Title"].str.contains(check, case=False, na=False)] 
@@ -114,7 +119,7 @@ if check:
     )
     st.markdown('</div>', unsafe_allow_html=True)
     result = CSV[CSV["Title"] == choice].iloc[0]
-    schema = load_data(result["Text#"])
+    schema = load_data(result["Text#"], modèlelarge)
     with col_illu:
         st.markdown('<div class="divisioncarteillu">', unsafe_allow_html=True)
         st.image(f'https://www.gutenberg.org/cache/epub/{result["Text#"]}/images/cover.jpg')

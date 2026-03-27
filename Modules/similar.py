@@ -76,6 +76,8 @@ def Get_Similaire(Book_Data, Topics_Data):
 
     
     liste_vecteurs = list(Topics_Data[1].values())  # on prend notre liste textuel dans le csv et on la transofmr en vrai liste
+    if len(liste_vecteurs) == 0:
+        return []
     vct_Book = np.mean(liste_vecteurs, axis=0).reshape(1, -1)   # on creer le vecteur moyen du livre
         
     Best_Score = (-1, -1)   # (Index, Score)
@@ -87,7 +89,7 @@ def Get_Similaire(Book_Data, Topics_Data):
         if df.loc[i, "Book"] != Book_Data["title"]:             # on verifie que on ne compare pas notre livre avec sa meme version dans le csv
 
             # on nettoie le Vector dans le csv car c'est pas une vrai liste c'est un carnage
-            chaine_propre = df.loc[i, "Vector"].replace('[', '').replace(']', '').replace('\n', '')
+            chaine_propre = df.loc[i, "Vector"].replace('[', '').replace(']', '').replace('\n', ' ')
             vct_Cible = np.fromstring(chaine_propre, sep=' ').reshape(1, -1)  # on definie le vecteur de notre livre qu'on vient de prendre du csv
 
             # on prend les bookshelvdses du livre qu'on vient de prendre

@@ -3,15 +3,24 @@ import string
 
 
 def tokenize_data(Text, stop=False, punct=False, sent=False):
+    """
+    Cette fonction va servir pour tokenize nos texte, elle va prendre en argument un texte et le decouper en une lioste avec diferentes
+    methode pour etre plius facilement conforme
+
+    Prend en argument:
+    Text --> un texte ne format str
+    stop --> argument optionnel qui permet de retirer les stopwords
+    punct --> argument optionnel qui permet de retirer les punctuation
+    sent --> argument otpionnel, permnet de tokenizer avec des phrases et non des mots
 
 
+    return --> une liste de token qui correspond a notre text
+    """
     if punct:
-
         Text = Text.translate(str.maketrans('', '', string.punctuation))
 
 
-
-    # iic on gere les tokens
+    # ici on gere les tokens
     # on defini notre liste de stopword donc els the etc avec une librairie
     stop_words = stopwords.words("english")
     # on va split tt nos motss dans notre text

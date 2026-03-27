@@ -2,6 +2,14 @@ from nltk.stem import SnowballStemmer
 import spacy
 
 def run_normalize(Text, isSteam=False):
+    """
+    Fonction qui sert a normalize notre text, nous allons donc rendre conforme notre text
+
+    Prend en argument un texte ainsi qu'in parametre optionnel isSteam qui est un autre mode de normalization
+    /!\ A noter que isSteam consome beaocup plus de ressource, attention lors de son utilisation /!\
+    
+    La fonction renvoie le meme texte qu'en parametre mais normalize
+    """
     # si y a --steam
     if isSteam == True:
         stemmer = SnowballStemmer("english")

@@ -3,10 +3,20 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
 def Upd_relation(Book_Data, Topics_Data):
+    """
+    Cette fonction permet d'ajouter une nouvelle relation dans notre csv relation
+
+    La fonction prend en parametre les informations du livre ainsi que ss informations sur son topic
+
+    La fonction ne renvoie rien, elle met a jour le fichier relation,csv avec une nouvelle ligne contenant notre nouvelle entree pour le livre actuel
+    """
+    # on initialise nos data avec nos arguments
     dico_Vectors = Topics_Data[1]
     tt_vecteurs = list(dico_Vectors.values())
+    # on fait la moyenne de notre matriuce de vecteur
     vecteur_Livre = np.mean(tt_vecteurs, axis=0)
 
+    # on definie le vecteur du livre
     vBook = vecteur_Livre.reshape(1, -1)
 
 
@@ -30,6 +40,13 @@ def Upd_relation(Book_Data, Topics_Data):
 
 
 def Bookshelves(raw):
+    """
+    Cette fonction sert a normalize notre Bookshelves, elle va transofmer les ':' en ; et va decouper tout les ';' pour obtenir une liste
+
+    Prend en argument une string
+
+    Renvoie une liste des mots de cette stringf
+    """
     L = raw.replace(":", ";").split(";")
     L = [x.strip() for x in L if x.strip()]
     return L

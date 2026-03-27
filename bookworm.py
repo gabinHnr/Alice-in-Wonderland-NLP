@@ -45,11 +45,6 @@ import torch
 import transformers
 from transformers.pipelines import PIPELINE_REGISTRY
 
-print(f"Torch détecté ? : {torch.__version__}")
-print(f"Transformers version : {transformers.__version__}")
-print(f"Est-ce que Transformers voit Torch ? : {transformers.utils.is_torch_available()}")
-print(f"Tâches Seq2Seq chargées ? : {'summarization' in PIPELINE_REGISTRY.get_supported_tasks()}")
-
 
 def Info_Book():
     """
@@ -286,8 +281,11 @@ def topics(ID):
 
 
 
-def Similar():
-    return "test"
+def Similar(ID):
+    Info = {}
+    Info["info"] = Info_Book_ID(ID)
+    Info["topics"] = topics(ID)
+    return Get_Similaire(Info["info"], Info['topics'])
 
 
 
@@ -330,7 +328,7 @@ if not is_streamlit():
 
     # SI on appelle notre argument `--similar` dans le fichier
     if args.similar:
-        print(Similar())
+        print(Similar(args.ID))
 
 
 

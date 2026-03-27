@@ -63,6 +63,7 @@ def Get_Similaire(Book_Data, Topics_Data):
 
     Book_Data --> Information sur le livre actuelle, celui qu'on veut etudier
     Topics_Data --> Contient nos Top 10 word (inutile ici) et egalement notre matrice de vecteur
+
     return --> liste de tout les livres actuellement connu et similaire a notre livre
     """
     df = pd.read_csv('cache/relation.csv', sep=';') # on defini le DF
@@ -159,7 +160,8 @@ def Get_Similaire(Book_Data, Topics_Data):
     df.to_csv("cache/relation.csv", sep=';', index=False)
 
 
-    print(f"Meilleur score trouvé : {Best_Score[1]} (Index: {Best_Score[0]})")
-    print(df.loc[i, "Similar"])
+
+    Str_similar = df.loc[i, "Similar"]
+    Lst_similar_final = Str_similar.split(",")
     return df.loc[i, "Similar"]
 

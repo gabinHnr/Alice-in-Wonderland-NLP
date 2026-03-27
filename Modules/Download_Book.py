@@ -17,8 +17,6 @@ def download_book(Dico_info, ID):
     
     # on verifie qu'il existe pas deja
     if os.path.exists(file_name):
-        print(f"Livre {ID} deja present localement.")
-        print("Utilisation du cash.")
         return ["Succes", (f"cache/{Dico_info[str(ID)]['title']}/{Dico_info[str(ID)]['title']}.txt")]
 
 

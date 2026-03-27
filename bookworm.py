@@ -32,11 +32,7 @@ from collections import Counter
 # initisalisation de notyre parser
 parser = argparse.ArgumentParser()
 
-# nltk.download('stopwords')
-# nltk.download('punkt')
-# nltk.download("punkt_tab")
-# python3 -m spacy download fr_core_news_sm
-# nos actions
+
 def get_args():
     parser.add_argument("ID", type=int)
     VariableType = parser.add_mutually_exclusive_group()

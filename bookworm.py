@@ -41,7 +41,14 @@ def get_args():
     # notre nom pour les args
     return(parser.parse_args())
 
+import torch
+import transformers
+from transformers.pipelines import PIPELINE_REGISTRY
 
+print(f"Torch détecté ? : {torch.__version__}")
+print(f"Transformers version : {transformers.__version__}")
+print(f"Est-ce que Transformers voit Torch ? : {transformers.utils.is_torch_available()}")
+print(f"Tâches Seq2Seq chargées ? : {'summarization' in PIPELINE_REGISTRY.get_supported_tasks()}")
 
 
 def Info_Book():
@@ -218,11 +225,6 @@ def Entities(ID):
     decoupage(response[1])
     
 
-    # nameFIle = f"{response[1][:-4]}_token.txt"
-    # with open(nameFIle, "r", encoding="utf-8") as txt:couleur
-    #     tokens = json.load(txt)
-    
-
 
     Info_longueur = longueur(response)
     files = Info_longueur[0]
@@ -253,35 +255,18 @@ def Entities(ID):
 
 
 
-# def topics(ID):
-#     """
-#     Fonction qui permet de recuperer les 10 mots les plus poresent par chapitre, ce qui permet d'en deduire le topics du chapitre
 
-#     ne prend pas de parametre
-#     se sert de la fonction `download_book`
-#     se sert de la fonction `Get_topics`
-
-#     return --> renvoie un dictionnaire avec en cle le numero du chapitre, et en valeur uen liste des 10 mots les plus presents
-#     """
-#     # on initialise nos variable
-#     Dico_Topics = {}
-#     Lst_Topics = []
-#     response = download_book(Livre_infos, ID)
-#     info_longueur = longueur(response)
-#     nbr_chap = info_longueur[0] - 2
-
-#     # on va utiliser la fonction Get_topics pour aller chercher pour chacun de nos chapitre les indformartions necessaire
-#     for i in range(1, nbr_chap):
-#         Lst_Topics.append((Get_topics(f"{info_longueur[2]}/Chapter_{i}.txt")))
-
-#     # on passe pour chaque element de de notre liste de topics
-#     for i, element in enumerate(Lst_Topics):
-#         Dico_Topics[i+1] = element
-    
-#     # renvoie le dictionnaire contenant pour chaque cahpitre nos liste de mot
-#     return(Dico_Topics)
 
 def topics(ID):
+    """
+    Fonction qui permet de recuperer les 10 mots les plus poresent par chapitre, ce qui permet d'en deduire le topics du chapitre
+
+    ne prend pas de parametre
+    se sert de la fonction `download_book`
+    se sert de la fonction `Get_topics`
+
+    return --> renvoie un dictionnaire avec en cle le numero du chapitre, et en valeur uen liste des 10 mots les plus presents
+    """
     Dico_mots = {}
     Dico_vecteurs = {}
     
@@ -315,7 +300,7 @@ def Card(ID):
     Carte["lexdiv"] = lexdiv(ID)
     Carte["topics"] = topics(ID)
     Carte["entities"] = Entities(ID)
-    # Carte["summary"] = summary(ID)
+    Carte["summary"] = summary(ID)
     Upd_relation(Carte["info"], Carte['topics'])
     Carte["similar"] = Get_Similaire(Carte["info"], Carte['topics'])
     return (Carte)

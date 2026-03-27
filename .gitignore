@@ -5,3 +5,6 @@ cache/*
 
 Modules/__pycache__/
 __pycache__
+
+
+!cache/relation.csv

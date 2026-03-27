@@ -12,9 +12,10 @@ import sys
 from Modules.Tokenization import tokenize_data
 from Modules.Normalize import run_normalize
 from Modules.Download_Book import download_book
+from Modules.similar import Upd_relation, Get_Similaire
 from Modules.postag import run_spacy_pipeline
 from Modules.decoupage import decoupage
-from Modules.Get_Topics import Get_topics
+from Modules.Get_Topics import Get_topics, get_book_vector
 
 
 from collections import Counter
@@ -64,6 +65,7 @@ def Info_Book():
     return result
 # on initialise notre variable Livre_infos pour quel soit accesible partout
 Livre_infos = Info_Book()
+
 
 def Info_Book_ID(ID):
     return Livre_infos.get(str(ID), None)
@@ -129,6 +131,9 @@ def lexdiv(ID):
     Dict_lexdiv["mwf"] = len(tokens)/tokens_unique
 
     return Dict_lexdiv
+
+
+
 
 def summary(ID):
 
@@ -245,34 +250,51 @@ def Entities(ID):
 
 
 
+# def topics(ID):
+#     """
+#     Fonction qui permet de recuperer les 10 mots les plus poresent par chapitre, ce qui permet d'en deduire le topics du chapitre
+
+#     ne prend pas de parametre
+#     se sert de la fonction `download_book`
+#     se sert de la fonction `Get_topics`
+
+#     return --> renvoie un dictionnaire avec en cle le numero du chapitre, et en valeur uen liste des 10 mots les plus presents
+#     """
+#     # on initialise nos variable
+#     Dico_Topics = {}
+#     Lst_Topics = []
+#     response = download_book(Livre_infos, ID)
+#     info_longueur = longueur(response)
+#     nbr_chap = info_longueur[0] - 2
+
+#     # on va utiliser la fonction Get_topics pour aller chercher pour chacun de nos chapitre les indformartions necessaire
+#     for i in range(1, nbr_chap):
+#         Lst_Topics.append((Get_topics(f"{info_longueur[2]}/Chapter_{i}.txt")))
+
+#     # on passe pour chaque element de de notre liste de topics
+#     for i, element in enumerate(Lst_Topics):
+#         Dico_Topics[i+1] = element
+    
+#     # renvoie le dictionnaire contenant pour chaque cahpitre nos liste de mot
+#     return(Dico_Topics)
+
 def topics(ID):
-    """
-    Fonction qui permet de recuperer les 10 mots les plus poresent par chapitre, ce qui permet d'en deduire le topics du chapitre
-
-    ne prend pas de parametre
-    se sert de la fonction `download_book`
-    se sert de la fonction `Get_topics`
-
-    return --> renvoie un dictionnaire avec en cle le numero du chapitre, et en valeur uen liste des 10 mots les plus presents
-    """
-    # on initialise nos variable
-    Dico_Topics = {}
-    Lst_Topics = []
+    Dico_mots = {}
+    Dico_vecteurs = {}
+    
     response = download_book(Livre_infos, ID)
     info_longueur = longueur(response)
     nbr_chap = info_longueur[0] - 2
 
-    # on va utiliser la fonction Get_topics pour aller chercher pour chacun de nos chapitre les indformartions necessaire
     for i in range(1, nbr_chap):
-        Lst_Topics.append((Get_topics(f"{info_longueur[2]}/Chapter_{i}.txt")))
-
-    # on passe pour chaque element de de notre liste de topics
-    for i, element in enumerate(Lst_Topics):
-        Dico_Topics[i+1] = element
-    
-    # renvoie le dictionnaire contenant pour chaque cahpitre nos liste de mot
-    return(Dico_Topics)
+        file_path = f"{info_longueur[2]}/Chapter_{i}.txt"
         
+        mots, vecteur = Get_topics(file_path)
+        
+        Dico_mots[i] = mots
+        Dico_vecteurs["vectors"] = vecteur
+    
+    return Dico_mots, Dico_vecteurs
 
 
 
@@ -290,8 +312,9 @@ def Card(ID):
     Carte["lexdiv"] = lexdiv(ID)
     Carte["topics"] = topics(ID)
     Carte["entities"] = Entities(ID)
-    Carte["summary"] = summary(ID)
-    # Carte["similar"] = summary()
+    # Carte["summary"] = summary(ID)
+    Upd_relation(Carte["info"], Carte['topics'])
+    Carte["similar"] = Get_Similaire(Carte["info"], Carte['topics'])
     return (Carte)
 
 def is_streamlit():
@@ -305,8 +328,8 @@ if not is_streamlit():
         print(lexdiv(args.ID))
 
     # SI on appelle notre argument `--entities` dans le fichier
-    # if args.entities:
-    #     print(Entities(args.ID))
+    if args.entities:
+        print(Entities(args.ID))
 
     if args.summarize:
         print(summary(args.ID))
@@ -320,3 +343,6 @@ if not is_streamlit():
     # SI on appelle notre argument `--similar` dans le fichier
     if args.similar:
         print(Similar())
+
+
+

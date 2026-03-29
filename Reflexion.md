@@ -46,10 +46,28 @@ Avec ce principe, nous n'avons pas besoin de parcourir tous nos livres. Nous uti
 L'exécution de similar n'est pas plus longue : elle est identique voire plus rapide que d'autres versions et permet d'être beaucoup plus efficace.
 Pour cela, nous utilisons donc Pandas, Spacy et Sklearn principalement pour les vecteurs.
 
+### Summary
+
+La fonction summary est l'autre fonction la plus dure de ce projet. Nous voulions quelque chose de précis ou du moins qui renvoyait un résumé digne de ce nom. Il nous a fallu passé une bonne partie du projet pour réussir à avoir un modèle satisfaisant mais très lourd. Nous avons donc choisi de laisser le choix à l'utilisateur parmi le plus simple et rapide ou le plus précis mais plus lent.
+
+Le summary plus rapide et moins précis se sert des 10 mots les plus présent dans le livre. Celui-ci sélectionne par la suite les phrases avec le score le plus élevé pour pouvoir faire un résumé. 
+
+Le summary plus lours lui ce sert d'un modèle, qui permet, via de la tokenization, de faire un résumé beaucoup plus poussé.
+
+### Card
+
+Enfin la fonction Card permet elle de faire une synthèse de toutes les autres fonction , du moins tous les rassembler en un grand dictionnaire pour avoir toutes les informations d'un livre en un seul point qui est facile de compréhension.
+
+Cette fonction permet aussi de faciliter la création de métadata.
+
 ## Cache et découpage
 
 Pour tout notre projet, nous travaillons avec un cache : un dossier qui va sauvegarder des informations pour permettre une exécution plus rapide. Nous avons designé intelligemment notre cache : il contient un dossier pour chaque livre exécuté.
 Dedans, nous trouvons une copie du livre téléchargé depuis internet, une liste des tokens du livre, ainsi que tous les chapitres découpés en fichiers et la card générée.
 
 Nous avons donc dû designer une fonction de découpage qui gère le plus de cas possible pour couper tous les chapitres, car aucun n'est identique : certains ont des numéros romains, d'autres latins, d'autres aucun, etc.
+
+## Streamlit
+
+A la fin de notre projet, nous nous sommes vite rendu compte que malgré cette fonction Card, visualisé les élément était plutôt fastidieux. Nous avons donc décider de faire un streamlit interactif permettant de choisir un livre et d'avoir les informations claires de chaque fonction directement affiché sur l'écran de manière structurée et permettant une plus simple compréhension.
 

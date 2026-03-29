@@ -1,6 +1,5 @@
 import csv
 import argparse
-import requests
 import json
 import nltk
 from transformers import pipeline
@@ -9,13 +8,11 @@ import pandas as pd
 import sys
 
 # on import nos modules python qui vont nous servir a plein de chose, ( fais a la main c'est juste pour avoir un code plus propre)
-from Modules.Tokenization import tokenize_data
-from Modules.Normalize import run_normalize
 from Modules.Download_Book import download_book
 from Modules.similar import Upd_relation, Get_Similaire
 from Modules.postag import run_spacy_pipeline
 from Modules.decoupage import decoupage
-from Modules.Get_Topics import Get_topics, get_book_vector
+from Modules.Get_Topics import Get_topics
 
 
 import nltk
@@ -46,8 +43,6 @@ def get_args():
     # notre nom pour les args
     return(parser.parse_args())
 
-import torch
-import transformers
 from transformers.pipelines import PIPELINE_REGISTRY
 
 
@@ -146,25 +141,48 @@ def lexdiv(ID):
 
 
 def summary(ID):
+    """
+    Fonction permettant de faire un rapide résumé de notre livre.
+
+    Ici, on fait un modèle "simple" et "léger" qui permet d'avoir un résultat rapide mais moins précis
+    """
+    
+    ## Initialisation des différentes variables
     download_livre = download_book(Livre_infos, ID)
     nameFile = download_livre[1].split("/")[1]
+    words = []
+    resume = []
+
+    # On ouvre le fichier texte du livre entier et on le "lit" via .read()
     with open(f"cache/{nameFile}/{nameFile}.txt", "r", encoding="utf-8") as txt:
         lecture = txt.read()
+
+    #On tokenize le livre pour pouvoir prendre une partie du livre à résumé, ici on s'arrète au quart du livre.
     sentences = sent_tokenize(lecture[:len(lecture)//4])
+
+    # Stemmer permet de prendre le radical des mots pour simplifier grandement le texte (radical de jouer, joueur, jouet --> jouet)
     stemmer = PorterStemmer()
-    stop_words = set(stopwords.words("french"))
-    words = []
+
+    #On fait une liste de tous les "stopwords" soit les "The", "a" etc.. Pour éviter de les prendre pour notre résumé car ils crées des perturbations.
+    stop_words = set(stopwords.words("english"))
+
+    # On va parcourir tous le quart de livre et faire un top 10 des mots les plus utilisés.
     for k in sentences:
         for j in nltk.word_tokenize(k):
             if j not in stop_words and j.isalpha():
                 words.append(stemmer.stem(j))
+
+    # frequence est justement la fréquence de chaque mots dans le texte            
     frequence = nltk.FreqDist(words)
+    # Et on prends les mots les plus présents
     dixplusfrequent = [mots[0] for mots in frequence.most_common(10)]
-    resume = []
+
+    ## Ensuite on fait un résumé en repacourant le texte et en prenant les phrases avec le plus grand score 
     for k in sentences:
         motsphrase = nltk.word_tokenize(k.lower())
         score = 0
         for j in motsphrase:
+            # Le socre est simplement calculé via quand la mots ou l'on se trouve dans la phrase fait partie des 10 mots les plus utilisés
             if stemmer.stem(j) in dixplusfrequent:
                 score += 1
         resume.append((k, score))
@@ -172,6 +190,11 @@ def summary(ID):
         return(k[0])
 
 def summarycomplet(ID):
+    """
+    Fonction permettant de faire un rapide résumé de notre livre.
+
+    Ici, on fait un modèle "plus complexe" et "plus lours" qui permet d'avoir un résultat un peu plus lent mais bien plus précis
+    """
 
     ## Initialisation des différentes variables
     download_livre = download_book(Livre_infos, ID)
@@ -285,7 +308,7 @@ def Entities(ID):
 
 def topics(ID):
     """
-    Fonction qui permet de recuperer les 10 mots les plus poresent par chapitre, ce qui permet d'en deduire le topics du chapitre
+    Fonction qui permet de recuperer les 10 mots les plus present par chapitre, ce qui permet d'en deduire le topics du chapitre
 
     ne prend pas de parametre
     se sert de la fonction `download_book`
@@ -324,6 +347,20 @@ def Similar(ID):
 
 
 def Card(ID, large=False):
+    """
+    Fonction qui permet de regrouper toutes les autres fonctions sous forme de "carte" permettant d'en avoir toutes les informations.
+
+    {
+    "info": {"id": str, "authors": str, "bookshelves": str},
+    "lexdiv": {"tok": int, "typ": int, "hap": int, "ttr": float, "mwl": float, "mwf": float},
+    "topics": {1: list[str], ..., 4: list[str]},
+    "entities": {"characters": list[str], "locations": list[str]},
+    "summary": str,
+    "similar": ["title1", ..., "title5"],
+    }
+    
+    """
+
     Carte = {}
     Carte["info"] = Info_Book_ID(ID)
     Carte["lexdiv"] = lexdiv(ID)
@@ -335,13 +372,14 @@ def Card(ID, large=False):
         Carte["summary"] = summary(ID)
     Upd_relation(Carte["info"], Carte['topics'])
     Carte["similar"] = Get_Similaire(Carte["info"], Carte['topics'])
-    # Carte["similar"] = summary()
     return (Carte)
 
+
+# Fonctions qui permet de savoir si le demande d'info est faite par le streamlit ou non
 def is_streamlit():
     return "streamlit" in sys.modules
 
-
+## Si c'est un appel via la console et donc non pas par streamlit on fait les vérification de CLI etc...
 if not is_streamlit():
     args = get_args()
 # SI on appelle notre argument `--lexdiv` dans le fichier

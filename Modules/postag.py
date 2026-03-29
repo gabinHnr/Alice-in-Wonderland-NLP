@@ -1,4 +1,4 @@
-import nltk
+# import nltk
 
 # def run_postag(All_token):
 #     tokens = All_token

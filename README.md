@@ -65,3 +65,25 @@ Exemple pour avoir le résumé du livre <u>"Alice au pays des merveilles"</u> qu
     python bookworm.py --summary 11
 
     >> Alice fell down the Rabbit-Hole after a White Rabbit with pink eyes . Alice tried to get out of a dark hall, but the locks were too large, or the key was too small . She came upon a little three-legged table, all made of solid glass; there was nothing on it except a tiny golden key . She tried the little golden key in the lock, and to her great delight it fitted! Alice opened the door and found that it led into a small passage, not much . Alice’s Right Foot, Esq., near the Fender, is about to give her own feet a new pair of boots every Christmas
+
+Mais on peu aussi le faire via un streamlit, un dashboard interactif !
+
+Il vous suffit pour cela de faire la commande suivante :
+```
+streamlit run streamlit.py
+```
+
+Cela devrais vous ouvir une page internet avec comme URL :
+```
+http://localhost:8501
+```
+
+Sinon, il vous suffit de taper cette même URL dans votre navigateur, ou de faire "ctrl" + "click" sur cette URL présente dans votre terminal.
+
+Une fois arrivé sur le streamlit, vous aurais une barre de recherche. Il vous suffit de taper le nom d'un livre ou simplement le début et de faire entrée pour avoir toutes les informations de ce livre.
+
+``` 
+"Alice's adventures in Wonderland" peut être recherché en tapant exactement son nom dans la barre de recherche, ou simplement en écrivant "Alice" dans celle-ci.
+```
+
+Vosu avez aussi le choix sur le choix du modèle de summary utilisé. si vous cocher la case modèle large. Le temps de chargement sera un peu plus lent mais vous permettra d'avoir un meilleur résumé du livre.

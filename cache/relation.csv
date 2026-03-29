@@ -73,7 +73,7 @@ Through the Looking-Glass;Carroll, Lewis, 1832-1898;"Children's Literature; Best
    2.27755547e-01 -1.25137115e+00  5.77066690e-02  3.04729152e+00
   -2.96427369e-01  1.03876221e+00 -6.02388792e-02  1.59717351e-01
   -2.25249887e+00  2.38715589e-01  4.98839527e-01 -4.50586736e-01
-   2.24083349e-01  1.50680780e+00  8.58516157e-01  1.14015549e-01]]";Peter Pan,Alice's Adventures in Wonderland,Treasure Island
+   2.24083349e-01  1.50680780e+00  8.58516157e-01  1.14015549e-01]]";Alice's Adventures in Wonderland,Peter Pan,Treasure Island
 Alice's Adventures in Wonderland;Carroll, Lewis, 1832-1898;"Children's Literature; Category: Children & Young Adult Reading; Category: Novels; Category: Classics of Literature; Category: British Literature";"[[-0.4889012   1.1544135   1.2468545   0.14287302 -0.2165175   0.5423935
    0.5464156  -1.984062   -1.3398983   0.80717117  1.192535   -0.6682871
   -0.39213413  2.623955   -1.0689195   0.367201   -0.07027098 -0.58707696
@@ -198,7 +198,7 @@ Peter Pan;Barrie, J. M. (James Matthew), 1860-1937;"Children's Literature; Movie
    7.48180151e-02 -9.68382321e-03  3.20362985e-01  2.30566525e+00
    3.19952965e-01  4.99999106e-01  2.58956015e-01  8.10934380e-02
   -1.55564117e+00  7.73291945e-01  6.60868526e-01 -2.26312011e-01
-   3.07792991e-01  7.08306015e-01  5.17282188e-01 -4.77251053e-01]]";" the modern prometheus,Dracula,Through the Looking-Glass,Treasure Island,Frankenstein; or, the modern prometheus,Alice's Adventures in Wonderland,The Time Machine,Frankenstein; or"
+   3.07792991e-01  7.08306015e-01  5.17282188e-01 -4.77251053e-01]]";"The Time Machine,Frankenstein; or,Through the Looking-Glass,Alice's Adventures in Wonderland,Dracula,Treasure Island, the modern prometheus,Frankenstein; or, the modern prometheus"
 Treasure Island;"Stevenson, Robert Louis, 1850-1894; Rhead, Louis, 1857-1926 [Illustrator]";"Children's Literature; Historical Fiction; Best Books Ever Listings; Pirates, Buccaneers, Corsairs, etc.; Category: Adventure; Category: Novels; Category: Classics of Literature; Category: British Literature";"[[ 2.75103096e-02  1.05152357e+00 -1.44196540e-01 -3.08856547e-01
    1.12551749e+00 -1.10244405e+00 -1.04088902e+00 -2.12201905e+00
   -5.88188052e-01  8.27786803e-01  1.65111291e+00 -6.39798522e-01
@@ -273,7 +273,7 @@ Treasure Island;"Stevenson, Robert Louis, 1850-1894; Rhead, Louis, 1857-1926 [Il
    5.58191001e-01 -5.29370964e-01  1.32816792e+00  2.25200129e+00
   -4.41671044e-01 -4.60216999e-01 -6.26726031e-01 -6.21116996e-01
   -6.46422505e-01  5.90588927e-01  2.62324214e-01 -2.37129685e-02
-   5.69171011e-01  1.19182801e+00  1.03963590e+00 -1.19866502e+00]]";Peter Pan,Through the Looking-Glass,Alice's Adventures in Wonderland
+   5.69171011e-01  1.19182801e+00  1.03963590e+00 -1.19866502e+00]]";Through the Looking-Glass,Alice's Adventures in Wonderland,Peter Pan
 "Frankenstein; or, the modern prometheus";Shelley, Mary Wollstonecraft, 1797-1851;"Precursors of Science Fiction; Gothic Fiction; Movie Books; Science Fiction by Women; Category: Science-Fiction & Fantasy; Category: Novels; Category: Classics of Literature; Category: British Literature";"[[ 0.10255599  0.016987   -0.772989    0.18971701  0.46541435 -0.08800197
    0.23043998 -2.3668742  -1.4336243  -0.0281428   1.440722   -1.009023
   -0.12264381  2.0721703  -1.089108    0.53806406 -0.64866304 -1.8920689
@@ -323,7 +323,7 @@ Treasure Island;"Stevenson, Robert Louis, 1850-1894; Rhead, Louis, 1857-1926 [Il
   -0.53310597  1.3874211  -1.0113155   1.573904   -1.1968791  -0.38426724
   -0.95562    -0.79931504 -0.888587   -0.73637784  0.54568994  2.109788
    0.191234    0.64905703 -1.8347299  -1.064317   -1.6760137  -0.18813601
-   1.1208966   1.114712    0.788336    0.96804506  1.529706   -2.0421128 ]]";" the modern prometheus,Dracula,Peter Pan,The Time Machine,Frankenstein; or"
+   1.1208966   1.114712    0.788336    0.96804506  1.529706   -2.0421128 ]]";"The Time Machine,Frankenstein; or,Dracula,Peter Pan, the modern prometheus"
 The Time Machine;Wells, H. G. (Herbert George), 1866-1946;"Science Fiction; Movie Books; Category: Science-Fiction & Fantasy; Category: Novels; Category: British Literature";"[[ 0.713343    1.775556   -1.0984446  -0.50969696 -0.1300641   0.35184398
   -0.5852257  -2.165805   -0.92434216  0.8499838   1.0788924  -0.45059243
   -0.839842    2.2944052  -1.0548579   0.37231997 -0.583006   -1.323665
@@ -373,7 +373,7 @@ The Time Machine;Wells, H. G. (Herbert George), 1866-1946;"Science Fiction; Movi
   -0.86440194  1.2234341  -0.20882997  1.0347459  -0.939342   -0.02375049
   -0.77106196  0.32124764  0.04254901 -0.03431303  0.43827802  2.8490157
   -0.276399    0.25041595 -0.47695398  0.55873495 -1.322528   -0.599928
-   1.2661664  -0.05890899  0.5163328   1.159933    0.5027858  -0.92335796]]";" the modern prometheus,Dracula,Peter Pan,Frankenstein; or, the modern prometheus,Frankenstein; or"
+   1.2661664  -0.05890899  0.5163328   1.159933    0.5027858  -0.92335796]]";"Frankenstein; or,Dracula,Peter Pan, the modern prometheus,Frankenstein; or, the modern prometheus"
 Dracula;Stoker, Bram, 1847-1912;"Horror; Gothic Fiction; Mystery Fiction; Movie Books; Category: Science-Fiction & Fantasy; Category: Crime, Thrillers and Mystery; Category: Novels; Category: Classics of Literature; Category: British Literature";"[[-0.16615692  0.39258486 -0.60893095 -0.38619795 -0.44419402 -0.24274902
   -0.38090402 -0.48354602 -0.94528884 -0.13296519  0.382406    0.340869
    0.12357122  1.5527451  -0.23037593  0.46952286  0.40969244 -1.1360159
@@ -423,4 +423,4 @@ Dracula;Stoker, Bram, 1847-1912;"Horror; Gothic Fiction; Mystery Fiction; Movie 
    0.11241402  0.72705     0.01438098  0.3526885  -0.06408197 -1.0718205
   -0.613825    0.19168505 -0.2468235  -0.22792697  0.43314514  0.923086
   -0.75440705 -0.657711   -0.16958068 -0.47219443 -0.8914631   0.44817504
-  -0.56819296  0.74831873  0.92864895  0.9873565   0.542939   -0.30060902]]";" the modern prometheus,Peter Pan,Frankenstein; or, the modern prometheus,The Time Machine,Frankenstein; or"
+  -0.56819296  0.74831873  0.92864895  0.9873565   0.542939   -0.30060902]]";"The Time Machine,Frankenstein; or,Peter Pan, the modern prometheus,Frankenstein; or, the modern prometheus"
